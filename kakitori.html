@@ -199,6 +199,63 @@ details.hist summary .dt{color:var(--sub)}
 .best b{color:var(--ink)}
 .empty{background:var(--paper);border:1px dashed var(--line);border-radius:8px;padding:18px;color:var(--sub)}
 .flash{background:var(--soft);border-radius:8px;padding:10px 14px;margin:0 0 14px}
+.flash.err{background:var(--pen-soft);color:var(--ink);margin-top:14px}
+
+/* ---------- 紙の問題用紙 ---------- */
+.sheet-wrap{overflow-x:auto;background:var(--soft);border-radius:8px;padding:12px}
+.sheet-page{--box:clamp(40px,11vw,58px);background:#fff;color:#111;width:100%;max-width:720px;margin:0 auto;padding:18px 18px 14px;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.18);font-family:var(--f-kyo)}
+.sh-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px 16px;border-bottom:2px solid #111;padding-bottom:8px}
+.sh-title b{font-size:1.5em;font-weight:600;margin-right:.4em}
+.sh-title span{font-size:1em}
+.sh-meta{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;font-family:var(--f-ui);font-size:.85em}
+.sh-field i{display:inline-block;min-width:7em;border-bottom:1px solid #111;margin-left:.4em;font-style:normal;font-family:var(--f-kyo);font-size:1.15em}
+.sh-score i{display:inline-block;width:2.6em;height:1.9em;border:1.5px solid #111;border-radius:50%;vertical-align:middle;margin-right:.2em}
+.sh-list{list-style:none;margin:0;padding:0}
+.sh-q{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #bbb;min-height:calc(var(--box) + 2.1em)}
+.sh-no{flex:none;width:1.8em;height:1.8em;border:1.5px solid #111;border-radius:50%;display:grid;place-items:center;font-family:var(--f-ui);font-weight:700;font-size:.95em}
+.sh-line{font-size:clamp(17px,4.6vw,22px);line-height:1.4;font-weight:600;display:flex;align-items:flex-end;flex-wrap:wrap;row-gap:4px}
+.sh-ans{display:inline-flex;flex-direction:column;align-items:flex-start;margin:0 .15em}
+.sh-yomi{font-size:.62em;letter-spacing:.12em;line-height:1.3;padding-left:.15em}
+.sh-boxes{display:inline-flex;align-items:flex-end}
+.sh-box{display:inline-block;width:var(--box);height:var(--box);border:1.6px solid #111;margin-right:-1.6px;
+  background-image:linear-gradient(#c9c9c9,#c9c9c9),linear-gradient(#c9c9c9,#c9c9c9);background-size:1px 100%,100% 1px;background-position:center;background-repeat:no-repeat}
+.sh-kana{margin-left:calc(.1em + 1.6px)}
+.sh-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:8px;font-family:var(--f-ui);font-size:.75em;color:#444}
+.spoiler{filter:blur(5px);cursor:pointer;font-family:var(--f-kyo);font-weight:600;color:var(--ink);user-select:none}
+.spoiler.open{filter:none;user-select:text}
+.pv{margin-top:10px;max-width:420px}
+.pv img{display:block;width:100%;border:1px solid var(--line);border-radius:6px}
+.gkey label{display:block;font-weight:700;margin-bottom:4px}
+.gkey a{color:inherit}
+/* 写真採点の結果 */
+.plist{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:12px}
+.pq{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.pq-top{display:grid;grid-template-columns:2em minmax(0,1fr);gap:8px;align-items:center}
+.pq .m{font-family:var(--f-kyo);font-weight:600;font-size:1.6rem;color:var(--pen);text-align:center;line-height:1}
+.pq .m.ng{color:var(--sub)}
+.pq-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.pq-pair figure{margin:0;min-width:0}
+.pq-pair figcaption{font-size:.78rem;color:var(--sub);font-weight:700;margin-bottom:3px}
+.pq-pair img{display:block;max-width:100%;max-height:120px;border:1px solid var(--line);border-radius:4px;background:#fff}
+.pq-glyphs{display:flex;gap:4px;flex-wrap:wrap}
+.pq-g{position:relative;width:min(22vw,84px);aspect-ratio:1/1;border:1px solid var(--line);border-radius:4px;background:var(--bg)}
+.pq-g.bad{border-color:var(--pen);box-shadow:0 0 0 1px var(--pen) inset}
+.pq-g svg{position:absolute;inset:0;width:100%;height:100%}
+.pq-why{margin:8px 0 2px;font-size:.92rem}
+
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  html,body{background:#fff !important}
+  :root{padding:0 !important}
+  .board,.noprint,#v-home,#v-test,#v-photo,#v-result,#v-records{display:none !important}
+  main{max-width:none;padding:0}
+  .sheet-wrap{background:none;padding:0;overflow:visible}
+  .sheet-page{--box:16mm;box-shadow:none;max-width:none;padding:0;border-radius:0;font-size:12pt}
+  .sh-head{padding-bottom:2mm}
+  .sh-line{font-size:15pt}
+  .sh-q{padding:1.6mm 0;min-height:0;break-inside:avoid}
+  .sh-foot{margin-top:2mm}
+}
 </style>
 
 </head>
@@ -225,25 +282,29 @@ details.hist summary .dt{color:var(--sub)}
         <button type="button" class="btn" id="b-addname">この名前で追加</button>
       </div>
     </div></div>
+    <div class="row" id="row-way"><div class="lab">書き方</div><div class="chips" id="c-way"></div>
+      <p class="note" id="way-note"></p></div>
     <div class="row"><div class="lab">学年</div><div class="chips" id="c-grades"></div></div>
     <div class="row"><div class="lab">ことばの種類</div><div class="chips" id="c-types"></div>
       <p class="note">「熟語」には、特別な読み方（今日・大人など）や都道府県名も入っています。</p></div>
-    <div class="row"><div class="lab">問題の数</div><div class="chips" id="c-n"></div></div>
-    <div class="row"><div class="lab">進み方</div><div class="chips" id="c-flow"></div>
+    <div class="row" id="row-n"><div class="lab">問題の数</div><div class="chips" id="c-n"></div></div>
+    <div class="row" id="row-flow"><div class="lab">進み方</div><div class="chips" id="c-flow"></div>
       <p class="note" id="flow-note"></p></div>
-    <div class="row"><div class="lab">1字の時間</div><div class="chips" id="c-limit"></div>
+    <div class="row" id="row-limit"><div class="lab">1字の時間</div><div class="chips" id="c-limit"></div>
       <p class="note">漢字1字あたりの時間です。2字の熟語なら2倍になります。</p></div>
     <details class="more">
       <summary>くわしい設定</summary>
       <div class="row"><div class="lab">出し方</div><div class="chips" id="c-how"></div>
         <p class="note">「おまかせ」は、まだ出ていない問題と まちがえた問題を多めに出します。</p></div>
-      <div class="row"><div class="lab">書き順</div><div class="chips" id="c-order"></div>
+      <div class="row" id="row-order"><div class="lab">書き順</div><div class="chips" id="c-order"></div>
         <p class="note">書き順や線の向きがちがうときに×にするかを選びます。「○にする」でも、まちがいは知らせます。</p></div>
-      <div class="row"><div class="lab">形の判定</div><div class="chips" id="c-strict"></div>
+      <div class="row" id="row-strict"><div class="lab">形の判定</div><div class="chips" id="c-strict"></div>
         <p class="note">「きびしめ」は、線のつき出し（午と牛、天と夫など）も見ます。そのぶん、ていねいに書かないと×になりやすくなります。</p></div>
     </details>
+    <div class="row" id="row-gkey" hidden><div class="lab">Gemini</div><div></div></div>
     <p class="pool" id="pool"></p>
     <button type="button" class="btn primary big" id="b-start">テストを はじめる</button>
+    <button type="button" class="btn big" id="b-photo" hidden style="margin-top:10px">書いた用紙を 写真で採点する</button>
     <p class="credit">書き順のデータ：<a href="https://kanjivg.tagaini.net/" target="_blank" rel="noopener">KanjiVG</a>（Ulrich Apel, CC BY-SA 3.0）。判定は形・画数・書き順を自動で見ますが、とめ・はね・はらいまでは見ません。</p>
   </section>
 
@@ -278,6 +339,8 @@ details.hist summary .dt{color:var(--sub)}
     <div class="tfoot"><button type="button" class="btn" id="b-pause" hidden>いったん とめる</button> <button type="button" class="btn ghost" id="b-quit">テストを やめる</button></div>
   </section>
 
+  <section id="v-paper" hidden></section>
+  <section id="v-photo" hidden></section>
   <section id="v-result" hidden></section>
   <section id="v-records" hidden></section>
 </main>
@@ -2015,7 +2078,7 @@ function userSVG(strokes,o){
 }
 
 /* ================= 設定（この端末だけに保存） ================= */
-var S={grades:[1,2,3,4],types:['o','k','j'],n:10,how:'auto',flash:true,limit:20,orderStrict:true,strict:false,player:null};
+var S={grades:[1,2,3,4],types:['o','k','j'],n:10,how:'auto',flash:true,limit:20,orderStrict:true,strict:false,way:'screen',player:null};
 try{var saved=JSON.parse(localStorage.getItem('kanjiKaki.settings')||'null');if(saved&&typeof saved==='object'){Object.keys(S).forEach(function(k){if(saved[k]!=null)S[k]=saved[k];});}}catch(e){}
 function saveSettings(){try{localStorage.setItem('kanjiKaki.settings',JSON.stringify(S));}catch(e){}}
 
@@ -2081,8 +2144,8 @@ function stats(p){
   if(p._st)return p._st;
   var q={},c={},kinds={n:0,d:0,c:0,s:0,x:0};
   p.s.forEach(function(s){s.it.forEach(function(it){
-    var a=q[it[0]]||(q[it[0]]=[0,0,0,0,0]);
-    a[0]++;if(it[1]){a[1]++;a[2]+=it[2];}a[3]=s.t;a[4]=it[1];
+    var a=q[it[0]]||(q[it[0]]=[0,0,0,0,0,0]);
+    a[0]++;if(it[1]){a[1]++;if(typeof it[2]==='number'){a[2]+=it[2];a[5]++;}}a[3]=s.t;a[4]=it[1];
     var item=BYID[it[0]],codes=it[3]||'';
     if(!item)return;
     item.ks.forEach(function(k,j){
@@ -2132,7 +2195,7 @@ function initStore(){
 var view='home';
 function show(v){
   view=v;
-  ['home','test','result','records'].forEach(function(k){$('#v-'+k).hidden=(k!==v);});
+  ['home','test','result','records','paper','photo'].forEach(function(k){$('#v-'+k).hidden=(k!==v);});
   $('#nav').hidden=(v==='test');
   $$('#nav button').forEach(function(b){
     var on=(b.dataset.go==='records')===(v==='records');
@@ -2194,6 +2257,15 @@ function renderHome(){
   chipGroup($('#c-how'),[{v:'auto',label:'おまかせ'},{v:'random',label:'ランダム'},{v:'weak',label:'にがてだけ'}],function(){return S.how;},function(v){S.how=v;});
   chipGroup($('#c-order'),[{v:true,label:'×にする'},{v:false,label:'○にする（知らせるだけ）'}],function(){return S.orderStrict;},function(v){S.orderStrict=v;});
   chipGroup($('#c-strict'),[{v:false,label:'ふつう'},{v:true,label:'きびしめ'}],function(){return S.strict;},function(v){S.strict=v;});
+  if(IN_CLAUDE)S.way='screen';
+  $('#row-way').hidden=IN_CLAUDE;
+  chipGroup($('#c-way'),[{v:'screen',label:'画面に指で書く'},{v:'paper',label:'紙に書いて写真で採点'}],function(){return S.way;},function(v){S.way=v;});
+  var paper=S.way==='paper';
+  ['row-n','row-flow','row-limit','row-order','row-strict'].forEach(function(id){$('#'+id).hidden=paper;});
+  $('#way-note').textContent=paper?'10問の問題用紙を印刷して、紙に書きます。書いた用紙をスマホで撮ると、Geminiが読み取って採点します（書き順は見られません）。':'スマホやタブレットの画面に、指やペンで書きます。書き順も判定します。';
+  var gk=$('#row-gkey');gk.hidden=!paper;gk.lastElementChild.textContent='';if(paper)gk.lastElementChild.appendChild(keyBox(renderHome));
+  $('#b-start').textContent=paper?'10問の用紙をつくる':'テストを はじめる';
+  $('#b-photo').hidden=!(paper&&Sheets.length);
   $('#flow-note').textContent=S.flash?
     '画数どおりに書くと少しして自動で丸つけし、次の字・次の問題へ進みます。まちがえたときは、正しい書き順を見せてから進みます。':
     '1字書くごとに「できた」、答え合わせのあとは「つぎへ」をおして進みます。';
@@ -2214,7 +2286,8 @@ function pick(){
     .sort(function(a,b){return b.k-a.k;}).slice(0,S.n).map(function(x){return x.q;})
     .sort(function(){return Math.random()-0.5;});
 }
-$('#b-start').addEventListener('click',function(){var qs=pick();if(qs.length)startTest(qs,S.how==='weak'?'weak':'');});
+$('#b-start').addEventListener('click',function(){if(S.way==='paper'&&!IN_CLAUDE){newSheet();return;}var qs=pick();if(qs.length)startTest(qs,S.how==='weak'?'weak':'');});
+$('#b-photo').addEventListener('click',function(){openPhoto(null);});
 
 /* ================= 書くところ（指・ペン） ================= */
 var Pad=(function(){
@@ -2475,8 +2548,9 @@ $('#b-quit').addEventListener('click',endTest);
 /* ================= 結果 ================= */
 function summarize(items){
   var n=items.length,ok=0,ms=0,all=0;
-  items.forEach(function(it){all+=it[2];if(it[1]){ok++;ms+=it[2];}});
-  return {n:n,ok:ok,avg:ok?ms/ok:null,all:all};
+  var tn=0,timed=false;
+  items.forEach(function(it){if(typeof it[2]==='number'){timed=true;all+=it[2];if(it[1]){ok++;ms+=it[2];tn++;}}else if(it[1])ok++;});
+  return {n:n,ok:ok,avg:tn?ms/tn:null,all:timed?all:null};
 }
 function scoreOf(s){var m=summarize(s.it);return pct(m.ok,m.n);}
 function kindsText(codes,fixed){
@@ -2506,7 +2580,7 @@ function itemRow(it,onFlip,marks){
   var s=el('span','sent');
   if(q)s.appendChild(sentRuby(q));else s.textContent=it[0];
   li.appendChild(s);
-  li.appendChild(el('span','sec',sec(it[2])));
+  li.appendChild(el('span','sec',typeof it[2]==='number'?sec(it[2]):''));
   var sub=el('div','sub');
   if(marks){
     var th=el('span','thumbs');
@@ -2529,7 +2603,7 @@ function renderResult(){
   var head=el('div','paperhead');
   var sc=el('div','score',String(pct(sm.ok,sm.n)));sc.appendChild(el('small',null,'点'));head.appendChild(sc);
   var dl=el('dl','facts');
-  [['正解',sm.ok+' / '+sm.n+'問'],['正解率',pct(sm.ok,sm.n)+'%'],['平均回答時間',sm.avg==null?'—':sec(sm.avg)+'（正解した問題）'],['合計時間',sec(sm.all)]].forEach(function(r){
+  [['正解',sm.ok+' / '+sm.n+'問'],['正解率',pct(sm.ok,sm.n)+'%'],['平均回答時間',sm.avg==null?'—':sec(sm.avg)+'（正解した問題）'],['合計時間',sm.all==null?'—':sec(sm.all)]].forEach(function(r){
     dl.appendChild(el('dt',null,r[0]));dl.appendChild(el('dd',null,r[1]));
   });
   head.appendChild(dl);host.appendChild(head);
@@ -2592,7 +2666,7 @@ function csvOf(p){
   p.s.forEach(function(s){
     var d=new Date(s.t),ds=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+('0'+d.getMinutes()).slice(-2);
     s.it.forEach(function(it){var q=BYID[it[0]];
-      rows.push([ds,p.name,scoreOf(s),rangeLabel(s),q?q.g:'',q?TYPE[q.t]:'',q?q.pre+q.tg+q.post:it[0],q?q.tg:'',q?q.yomi:'',it[1]?1:0,(it[2]/1000).toFixed(1),kindsText(it[3],it[4])]);});
+      rows.push([ds,p.name,scoreOf(s),rangeLabel(s),q?q.g:'',q?TYPE[q.t]:'',q?q.pre+q.tg+q.post:it[0],q?q.tg:'',q?q.yomi:'',it[1]?1:0,typeof it[2]==='number'?(it[2]/1000).toFixed(1):'',kindsText(it[3],it[4])]);});
   });
   return '﻿'+rows.map(function(r){return r.map(c).join(',');}).join('\r\n');
 }
@@ -2610,13 +2684,13 @@ function renderRecords(){
   host.appendChild(chips);
 
   var n=0,ok=0,ms=0;
-  Object.keys(st.q).forEach(function(id){var a=st.q[id];n+=a[0];ok+=a[1];ms+=a[2];});
+  var tn=0;Object.keys(st.q).forEach(function(id){var a=st.q[id];n+=a[0];ok+=a[1];ms+=a[2];tn+=a[5]||0;});
   if(!n){
     host.appendChild(el('p','empty','まだ きろくが ありません。「テスト」で1回やってみると、ここに点数・回答時間・にがてな字が出ます。'));
     return;
   }
   var sum=el('div','sum');
-  [[n+'問','これまでに答えた数'],[pct(ok,n)+'%','正解率'],[ok?sec(ms/ok):'—','平均回答時間（正解）'],[p.s.length+'回','テストの回数']].forEach(function(r){
+  [[n+'問','これまでに答えた数'],[pct(ok,n)+'%','正解率'],[tn?sec(ms/tn):'—','平均回答時間（正解・画面）'],[p.s.length+'回','テストの回数']].forEach(function(r){
     var d=el('div');d.appendChild(el('b',null,r[0]));d.appendChild(el('span',null,r[1]));sum.appendChild(d);
   });
   host.appendChild(sum);
@@ -2662,8 +2736,8 @@ function renderRecords(){
   host.appendChild(el('h3',null,'学年・種類ごとの成績'));
   var cell={};
   BANK.forEach(function(q){
-    var k=q.g+q.t,c=cell[k]||(cell[k]={n:0,ok:0,ms:0,seen:0,total:0});c.total++;
-    var a=st.q[q.id];if(a&&a[0]){c.n+=a[0];c.ok+=a[1];c.ms+=a[2];c.seen++;}
+    var k=q.g+q.t,c=cell[k]||(cell[k]={n:0,ok:0,ms:0,tn:0,seen:0,total:0});c.total++;
+    var a=st.q[q.id];if(a&&a[0]){c.n+=a[0];c.ok+=a[1];c.ms+=a[2];c.tn+=a[5]||0;c.seen++;}
   });
   var tb=el('table','gt'),tr=el('tr');tr.appendChild(el('th',null,''));
   ['o','k','j'].forEach(function(t){tr.appendChild(el('th',null,TYPE[t]));});tb.appendChild(tr);
@@ -2671,7 +2745,7 @@ function renderRecords(){
     var r=el('tr');r.appendChild(el('th',null,g+'年生'));
     ['o','k','j'].forEach(function(t){
       var c=cell[g+t],td=el('td');
-      if(c&&c.n){td.appendChild(el('b',null,pct(c.ok,c.n)+'%'));td.appendChild(el('span',null,c.ok?sec(c.ms/c.ok):'—'));td.appendChild(el('span',null,c.seen+'/'+c.total+'問'));}
+      if(c&&c.n){td.appendChild(el('b',null,pct(c.ok,c.n)+'%'));td.appendChild(el('span',null,c.tn?sec(c.ms/c.tn):'—'));td.appendChild(el('span',null,c.seen+'/'+c.total+'問'));}
       else{td.appendChild(el('b',null,'—'));td.appendChild(el('span',null,'0/'+(c?c.total:0)+'問'));}
       r.appendChild(td);
     });
@@ -2701,7 +2775,7 @@ function renderRecords(){
     smy.appendChild(el('span',null,'平均 '+(m.avg==null?'—':sec(m.avg))));
     smy.appendChild(el('span','dt',fmtDate(s.t)));
     var rl=rangeLabel(s);if(rl)smy.appendChild(el('span','dt',rl));
-    smy.appendChild(el('span','dt',s.f?'自動'+(s.f>0?'・1字'+s.f+'秒':''):'ボタン'));
+    smy.appendChild(el('span','dt',s.k==='paper'?'紙・写真採点':(s.f?'自動'+(s.f>0?'・1字'+s.f+'秒':''):'ボタン')));
     d.appendChild(smy);
     d.addEventListener('toggle',function(){
       if(!d.open||d.querySelector('ul'))return;
@@ -2728,6 +2802,394 @@ function renderRecords(){
   }
   host.appendChild(tools);
   host.appendChild(el('p','note',Store.backend==='db'?'きろくは あなたのClaudeアカウントに保存され、ほかの人からは見えません。':'きろくは このブラウザに保存されています。ブラウザの閲覧データを消すと きろくも消えるので、ときどき「CSVで書き出す」で保存しておくと安心です。'));
+}
+
+/* ================= 紙に書いて写真で採点（Gemini） ================= */
+var IN_CLAUDE=!!(window.claude&&typeof window.claude.use==='function');
+var PAPER_N=10;
+var G={key:'',model:'gemini-3.8-flash'};
+try{var gs=JSON.parse(localStorage.getItem('kanjiKaki.gemini')||'null');if(gs&&typeof gs==='object'){if(gs.key)G.key=String(gs.key);if(gs.model)G.model=String(gs.model);}}catch(e){}
+function saveG(){try{localStorage.setItem('kanjiKaki.gemini',JSON.stringify(G));}catch(e){}}
+var MODELS=[{v:'gemini-3.8-flash',label:'3.8 Flash（おすすめ）'},{v:'gemini-3.6-flash',label:'3.6 Flash'},{v:'gemini-3.5-flash-lite',label:'3.5 Flash-Lite（安い）'}];
+
+/* 用紙（印刷した問題）の控え。写真と問題を結びつけるのに使う */
+var Sheets=[];
+try{var sh=JSON.parse(localStorage.getItem('kanjiKaki.sheets')||'[]');if(Array.isArray(sh))Sheets=sh.filter(function(x){return x&&x.code&&Array.isArray(x.qs);});}catch(e){}
+function saveSheets(){Sheets=Sheets.slice(-12);try{localStorage.setItem('kanjiKaki.sheets',JSON.stringify(Sheets));}catch(e){}}
+function sheetCode(){
+  var d=new Date(),L='ABCDEFGHJKLMNPQRSTUVWXYZ',r=L.charAt(Math.floor(Math.random()*L.length))+L.charAt(Math.floor(Math.random()*L.length));
+  return ('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2)+'-'+r;
+}
+function sheetQs(s){return s.qs.map(function(id){return BYID[id];}).filter(Boolean);}
+var curSheet=null;
+
+function newSheet(){
+  var keep=S.n;S.n=PAPER_N;var qs=pick();S.n=keep;
+  if(!qs.length)return;
+  curSheet={code:sheetCode(),t:Date.now(),player:P().id,qs:qs.map(function(q){return q.id;}),k:S.how==='weak'?'weak':'',r:{g:S.grades.slice(),t:S.types.slice()},done:false};
+  Sheets.push(curSheet);saveSheets();
+  renderPaper();show('paper');
+}
+function fmtDay(t){var d=new Date(t);return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';}
+function playerName(id){var n='';Store.players.forEach(function(p){if(p.id===id)n=p.name;});return n;}
+
+/* ---- 問題用紙 ---- */
+function sheetDOM(s){
+  var page=el('div','sheet-page');
+  var hd=el('div','sh-head');
+  var t=el('div','sh-title');t.appendChild(el('b',null,'漢字かきとり'));t.appendChild(el('span',null,'10問'));hd.appendChild(t);
+  var meta=el('div','sh-meta');
+  var nm=el('span','sh-field','なまえ');nm.appendChild(el('i',null,playerName(s.player)||''));meta.appendChild(nm);
+  meta.appendChild(el('span','sh-field',fmtDay(s.t)));
+  var sc=el('span','sh-score');sc.appendChild(el('i'));sc.appendChild(document.createTextNode('／10'));meta.appendChild(sc);
+  hd.appendChild(meta);
+  page.appendChild(hd);
+  var ol=el('ol','sh-list');
+  sheetQs(s).forEach(function(q,i){
+    var li=el('li','sh-q');
+    li.appendChild(el('span','sh-no',String(i+1)));
+    var line=el('span','sh-line');
+    line.appendChild(document.createTextNode(q.pre));
+    var grp=el('span','sh-ans');
+    grp.appendChild(el('span','sh-yomi',q.yomi));
+    var boxes=el('span','sh-boxes');
+    var kana='';
+    q.chars.forEach(function(c){
+      if(isKanji(c)){if(kana){boxes.appendChild(el('span','sh-kana',kana));kana='';}boxes.appendChild(el('span','sh-box'));}
+      else kana+=c;
+    });
+    if(kana)boxes.appendChild(el('span','sh-kana',kana));
+    grp.appendChild(boxes);line.appendChild(grp);
+    line.appendChild(document.createTextNode(q.post));
+    li.appendChild(line);
+    ol.appendChild(li);
+  });
+  page.appendChild(ol);
+  var ft=el('div','sh-foot');
+  ft.appendChild(el('span',null,'用紙 '+s.code));
+  ft.appendChild(el('span',null,'マスの中に、漢字を1字ずつ大きく書こう'));
+  page.appendChild(ft);
+  return page;
+}
+function renderPaper(){
+  var host=$('#v-paper');host.textContent='';
+  var s=curSheet;
+  var top=el('div','noprint');
+  top.appendChild(el('h2',null,'問題用紙（用紙 '+s.code+'）'));
+  top.appendChild(el('p','note','印刷して、マスの中に漢字を書きます。書き終わったら「写真で採点する」へ進んでください。プリンターがないときは、ノートに 1〜10 の番号と答えの漢字を書いても採点できます。'));
+  var b=el('div','btns');b.style.margin='12px 0 16px';
+  b.appendChild(btn('印刷する','primary',function(){try{window.print();}catch(e){}}));
+  b.appendChild(btn('写真で採点する','',function(){openPhoto(s);}));
+  b.appendChild(btn('問題を作りなおす','',function(){Sheets=Sheets.filter(function(x){return x!==s;});saveSheets();newSheet();}));
+  top.appendChild(b);
+  host.appendChild(top);
+  var wrap=el('div','sheet-wrap');wrap.appendChild(sheetDOM(s));host.appendChild(wrap);
+  var back=el('div','btns noprint');back.style.marginTop='16px';
+  back.appendChild(btn('じゅんびにもどる','ghost',function(){renderHome();show('home');}));
+  host.appendChild(back);
+}
+
+/* ---- Gemini の設定 ---- */
+var keySeq=0;
+function keyBox(onSaved){
+  var box=el('div','gkey'),kid='in-gkey-'+(++keySeq);
+  var lab=el('label',null,'APIキー');lab.setAttribute('for',kid);box.appendChild(lab);
+  var row=el('div','addbox');
+  var inp=el('input');inp.type='password';inp.id=kid;inp.className='gkey-in';inp.autocomplete='off';inp.setAttribute('autocapitalize','off');inp.spellcheck=false;
+  inp.placeholder=G.key?'保存ずみ（変えるときだけ入力）':'AIza… で始まるキーを貼り付け';
+  row.appendChild(inp);
+  row.appendChild(btn('保存','primary',function(){
+    var v=inp.value.trim();if(!v)return;
+    G.key=v;saveG();inp.value='';if(onSaved)onSaved();
+  }));
+  box.appendChild(row);
+  var ms=el('div','chips');ms.style.marginTop='8px';
+  MODELS.forEach(function(m){
+    var c=el('button','chip',m.label);c.type='button';c.setAttribute('aria-pressed',G.model===m.v?'true':'false');
+    c.addEventListener('click',function(){G.model=m.v;saveG();if(onSaved)onSaved();});ms.appendChild(c);
+  });
+  box.appendChild(ms);
+  var n=el('p','note');
+  n.appendChild(document.createTextNode('キーは '));
+  var a=el('a',null,'Google AI Studio');a.href='https://aistudio.google.com/apikey';a.target='_blank';a.rel='noopener';n.appendChild(a);
+  n.appendChild(document.createTextNode(' で作れます。キーはこの端末のブラウザの中だけに保存され、写真といっしょにGoogleへ送られます。無料枠では、送った写真がGoogleのサービス改善に使われることがあります。'));
+  box.appendChild(n);
+  if(G.key){
+    var st=el('p','note');st.appendChild(el('b',null,'キーは保存ずみです（…'+G.key.slice(-4)+'）。'));
+    var del=el('button','link','このキーを消す');del.type='button';del.addEventListener('click',function(){G.key='';saveG();if(onSaved)onSaved();});
+    st.appendChild(document.createTextNode(' '));st.appendChild(del);box.appendChild(st);
+  }
+  return box;
+}
+
+/* ---- 写真 ---- */
+var Photo={canvas:null,b64:'',busy:false,err:'',step:''};
+function openPhoto(s){
+  curSheet=s||curSheet||Sheets.filter(function(x){return x.player===P().id&&!x.done;}).slice(-1)[0]||Sheets.slice(-1)[0]||null;
+  Photo.canvas=null;Photo.b64='';Photo.err='';Photo.busy=false;
+  renderPhoto();show('photo');
+}
+function loadImage(file){
+  return new Promise(function(res,rej){
+    var url=URL.createObjectURL(file),img=new Image();
+    img.onload=function(){
+      var max=2000,w=img.naturalWidth,h=img.naturalHeight,k=Math.min(1,max/Math.max(w,h));
+      var c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);
+      var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(url);res(c);
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);rej(new Error('image'));};
+    img.src=url;
+  });
+}
+function renderPhoto(){
+  var host=$('#v-photo');host.textContent='';
+  host.appendChild(el('h2',null,'写真で採点'));
+  var mine=Sheets.slice().reverse();
+  if(!mine.length){
+    host.appendChild(el('p','empty','まだ問題用紙がありません。「じゅんび」で「紙に書いて写真で採点」をえらんで、用紙をつくってください。'));
+    host.appendChild(btn('じゅんびにもどる','',function(){renderHome();show('home');}));
+    return;
+  }
+  /* 1. 用紙をえらぶ */
+  var r1=el('div','row');r1.appendChild(el('div','lab','どの用紙？'));
+  var c1=el('div');var chips=el('div','chips');
+  mine.slice(0,6).forEach(function(s){
+    var c=el('button','chip',s.code+'（'+(playerName(s.player)||'—')+'・'+fmtDate(s.t).split(' ')[0]+(s.done?'・採点ずみ':'')+'）');c.type='button';
+    c.setAttribute('aria-pressed',curSheet===s||(curSheet&&curSheet.code===s.code)?'true':'false');
+    c.addEventListener('click',function(){curSheet=s;renderPhoto();});chips.appendChild(c);
+  });
+  c1.appendChild(chips);
+  if(curSheet){
+    var lst=el('p','note','この用紙の答え（おうちの方向け）：');
+    var sp=el('span','spoiler',sheetQs(curSheet).map(function(q,i){return (i+1)+' '+q.tg;}).join('　'));
+    sp.tabIndex=0;sp.setAttribute('role','button');sp.title='おすと見えます';
+    sp.addEventListener('click',function(){sp.classList.toggle('open');});
+    lst.appendChild(sp);c1.appendChild(lst);
+    c1.appendChild(el('p','note','用紙の右下にある番号（'+curSheet.code+'）と同じものをえらんでください。'));
+  }
+  r1.appendChild(c1);host.appendChild(r1);
+
+  /* 2. キー */
+  if(!G.key){
+    var r2=el('div','row');r2.appendChild(el('div','lab','APIキー'));
+    r2.appendChild(keyBox(renderPhoto));host.appendChild(r2);
+  }
+
+  /* 3. 写真 */
+  var r3=el('div','row');r3.appendChild(el('div','lab','写真'));
+  var c3=el('div');
+  var pick2=el('div','btns');
+  var inCam=el('input');inCam.type='file';inCam.accept='image/*';inCam.setAttribute('capture','environment');inCam.hidden=true;inCam.id='in-cam';
+  var inLib=el('input');inLib.type='file';inLib.accept='image/*';inLib.hidden=true;inLib.id='in-lib';
+  function onFile(e){
+    var f=e.target.files&&e.target.files[0];if(!f)return;
+    Photo.err='';
+    loadImage(f).then(function(c){Photo.canvas=c;Photo.b64=c.toDataURL('image/jpeg',0.86).split(',')[1];renderPhoto();},
+      function(){Photo.err='この写真を開けませんでした。別の写真でためしてください。';renderPhoto();});
+  }
+  inCam.addEventListener('change',onFile);inLib.addEventListener('change',onFile);
+  pick2.appendChild(inCam);pick2.appendChild(inLib);
+  pick2.appendChild(btn(Photo.canvas?'撮りなおす':'カメラで撮る',Photo.canvas?'':'primary',function(){inCam.click();}));
+  pick2.appendChild(btn('写真をえらぶ','',function(){inLib.click();}));
+  c3.appendChild(pick2);
+  c3.appendChild(el('p','note','用紙全体がまっすぐ入るように、明るいところで真上から撮ってください。影や手が入らないようにすると、よく読み取れます。'));
+  if(Photo.canvas){
+    var pv=el('div','pv');var im=el('img');im.alt='撮った写真';im.src=Photo.canvas.toDataURL('image/jpeg',0.7);pv.appendChild(im);c3.appendChild(pv);
+  }
+  r3.appendChild(c3);host.appendChild(r3);
+
+  if(Photo.err){var er=el('p','flash err',Photo.err);er.setAttribute('role','alert');host.appendChild(er);}
+  var go=btn(Photo.busy?(Photo.step||'採点中…'):'採点する','primary big',function(){gradePhoto();});
+  go.disabled=!(Photo.canvas&&G.key&&curSheet)||Photo.busy;
+  host.appendChild(go);
+  if(Photo.busy)host.appendChild(el('p','note','写真を読み取っています。10〜40秒ほどかかります。'));
+  if(G.key){
+    var d=el('details','more');d.style.marginTop='18px';if(Photo.openKey)d.open=true;d.appendChild(el('summary',null,'Geminiの設定'));d.appendChild(keyBox(renderPhoto));host.appendChild(d);
+  }
+  var back=el('div','btns');back.style.marginTop='16px';
+  back.appendChild(btn('じゅんびにもどる','ghost',function(){renderHome();show('home');}));
+  host.appendChild(back);
+}
+
+/* ---- Gemini 呼び出し ---- */
+function stripFence(t){return String(t||'').replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim();}
+function geminiError(status,body){
+  var msg=(body&&body.error&&body.error.message)||'',reason='';
+  try{(body.error.details||[]).forEach(function(d){if(d.reason)reason=d.reason;});}catch(e){}
+  if(reason==='API_KEY_INVALID'||/API key not valid/i.test(msg))return 'APIキーが正しくありません。Google AI Studioでキーを確かめて、もう一度保存してください。';
+  if(status===403&&/referer|referrer/i.test(msg))return 'このキーは、このページから使えない設定になっています。キーの「ウェブサイトの制限」に ytanoue-arch.github.io を入れてください。';
+  if(status===403)return 'このキーではGeminiを使えませんでした（'+msg.slice(0,80)+'）。';
+  if(status===404)return 'えらんだモデル（'+G.model+'）が使えませんでした。「Geminiの設定」で別のモデルをえらんでください。';
+  if(status===429)return '回数の上限に達しました。少し時間をおいてから、もう一度ためしてください。';
+  if(status>=500)return 'Geminiのサーバーが混みあっています。少し時間をおいてから、もう一度ためしてください。';
+  return '採点できませんでした（'+status+' '+msg.slice(0,80)+'）。';
+}
+function callGemini(text,schema){
+  function body(withSchema){
+    var gc={response_mime_type:'application/json'};if(withSchema)gc.response_schema=schema;
+    return JSON.stringify({contents:[{role:'user',parts:[{text:text},{inline_data:{mime_type:'image/jpeg',data:Photo.b64}}]}],generationConfig:gc});
+  }
+  function go(withSchema){
+    return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(G.model)+':generateContent',{
+      method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':G.key},body:body(withSchema)
+    }).then(function(r){
+      return r.json().catch(function(){return {};}).then(function(j){
+        if(!r.ok){
+          var m=(j&&j.error&&j.error.message)||'';
+          if(withSchema&&r.status===400&&/schema|response_schema|Invalid JSON payload/i.test(m))return go(false);
+          throw new Error(geminiError(r.status,j));
+        }
+        var cand=j.candidates&&j.candidates[0];
+        if(!cand){throw new Error(j.promptFeedback&&j.promptFeedback.blockReason?'写真を読み取れませんでした（'+j.promptFeedback.blockReason+'）。':'Geminiから答えが返ってきませんでした。');}
+        var t=((cand.content&&cand.content.parts)||[]).filter(function(p){return p.text&&!p.thought;}).map(function(p){return p.text;}).join('');
+        try{return JSON.parse(stripFence(t));}catch(e){throw new Error('読み取り結果を読めませんでした。もう一度ためしてください。');}
+      });
+    },function(e){
+      if(e&&e.message&&/[ぁ-ん]/.test(e.message))throw e;
+      throw new Error('Geminiにつながりませんでした。インターネットの接続を確かめてください。');
+    });
+  }
+  return go(true);
+}
+var SCHEMA_READ={type:'OBJECT',properties:{items:{type:'ARRAY',items:{type:'OBJECT',properties:{
+  no:{type:'INTEGER'},written:{type:'STRING'},box_2d:{type:'ARRAY',items:{type:'INTEGER'}},confidence:{type:'NUMBER'},notes:{type:'STRING'}},required:['no','written']}}},required:['items']};
+var SCHEMA_CHECK={type:'OBJECT',properties:{items:{type:'ARRAY',items:{type:'OBJECT',properties:{
+  no:{type:'INTEGER'},ok:{type:'BOOLEAN'},bad_chars:{type:'ARRAY',items:{type:'INTEGER'}},problems:{type:'STRING'}},required:['no','ok']}}},required:['items']};
+
+function promptRead(qs){
+  return ['この写真は、小学生が漢字の書きとりテストに答えた紙です。問題は1〜'+qs.length+'の番号つきで、各番号には漢字を書くマス目があります（ノートに書いた場合は、番号の横に答えが書いてあります）。',
+  '番号ごとに、子どもが手で書いた漢字だけを、見えたとおりに読み取ってください。',
+  '・正しい答えは知らされていません。文の意味や印刷されたよみがなから答えを推測して直さず、書かれている形のとおりに読み取ってください。',
+  '・印刷された文字（問題文、よみがな、送りがな、番号）は含めないでください。',
+  '・字の形がくずれていて、ある漢字だとはっきり言えないとき（画が足りない・多い、部品がちがう など）は、もっとも近い漢字を書いたうえで confidence を0.6より低くし、notes に気になるところを短く書いてください。',
+  '・何も書かれていないときは written を空文字に、読めない字は「？」にしてください。',
+  '・各番号のマスの数：'+qs.map(function(q,i){return (i+1)+'番 '+q.ks.length+'マス';}).join('、')+'。',
+  '・box_2d には、その番号の手書きの答え全体を囲む枠を [ymin, xmin, ymax, xmax]（0〜1000の値）で入れてください。',
+  '・1〜'+qs.length+'のすべての番号について、items に返してください。'].join('\n');
+}
+function promptCheck(list){
+  return ['同じ写真について、次の番号の答えが、正しい漢字として書けているかを きびしく確かめてください。',
+  '正しい答え：'+list.map(function(x){return x.no+'番「'+x.q.ks.join('')+'」';}).join('、'),
+  '小学校の漢字テストの採点と同じ考え方で、次のようなまちがいがあれば ok を false にしてください。',
+  '画が足りない・多い／部品（へん・つくり など）がちがう／つき出すところがつき出していない、またはつき出してはいけないところがつき出している／横線の長さの関係が逆（未と末、土と士 など）／点のあるなし／似ている別の字（右と石、待と持 など）。',
+  'とめ・はね・はらいの細かい形や、字のじょうず・へたでは false にしないでください。',
+  'まちがいがあれば bad_chars にその答えの何字目か（1から）を入れ、problems に子どもにわかる言葉で短く理由を書いてください。',
+  'ここにあげた番号すべてについて items に返してください。'].join('\n');
+}
+function onlyKanji(s){return Array.from(String(s||'').normalize('NFKC')).filter(function(c){return isKanji(c)||c==='？'||c==='?';}).map(function(c){return c==='?'?'？':c;});}
+
+function gradePhoto(){
+  if(Photo.busy||!curSheet||!Photo.b64)return;
+  var s=curSheet,qs=sheetQs(s);
+  Photo.busy=true;Photo.err='';Photo.openKey=false;Photo.step='読み取り中…（1/2）';renderPhoto();
+  var read={};
+  callGemini(promptRead(qs),SCHEMA_READ).then(function(r1){
+    (r1&&r1.items||[]).forEach(function(it){var n=parseInt(it.no,10);if(n>=1&&n<=qs.length&&!read[n])read[n]=it;});
+    var list=[];
+    qs.forEach(function(q,i){
+      var w=onlyKanji(read[i+1]&&read[i+1].written);
+      if(w.join('')===q.ks.join(''))list.push({no:i+1,q:q});
+    });
+    if(!list.length)return {items:[]};
+    Photo.step='たしかめ中…（2/2）';renderPhoto();
+    return callGemini(promptCheck(list),SCHEMA_CHECK);
+  }).then(function(r2){
+    var chk={};(r2&&r2.items||[]).forEach(function(it){var n=parseInt(it.no,10);if(n)chk[n]=it;});
+    var res=qs.map(function(q,i){
+      var rd=read[i+1]||{},w=onlyKanji(rd.written),exp=q.ks;
+      var codes=exp.map(function(k,j){return !w[j]?'x':(w[j]===k?'o':'s');});
+      var problems='';
+      var allOk=codes.every(function(c){return c==='o';})&&w.length===exp.length;
+      if(allOk){
+        var c=chk[i+1];
+        if(c&&c.ok===false){
+          var bad=(c.bad_chars||[]).map(function(x){return parseInt(x,10)-1;}).filter(function(x){return x>=0&&x<exp.length;});
+          if(!bad.length)bad=exp.map(function(_,j){return j;});
+          bad.forEach(function(j){codes[j]='s';});
+          problems=String(c.problems||'形にまちがいがあります');allOk=false;
+        }
+      }else if(w.length>exp.length&&codes.every(function(c){return c==='o';})){codes[codes.length-1]='s';}
+      var box=Array.isArray(rd.box_2d)&&rd.box_2d.length===4?rd.box_2d.map(Number):null;
+      return {q:q,ok:allOk?1:0,codes:codes.join(''),written:(rd.written||'').trim(),conf:typeof rd.confidence==='number'?rd.confidence:null,
+        notes:String(rd.notes||''),problems:problems,box:box};
+    });
+    Photo.busy=false;Photo.step='';
+    finishPaper(s,res);
+  }).catch(function(e){
+    Photo.busy=false;Photo.step='';Photo.err=(e&&e.message)||'採点できませんでした。';Photo.openKey=/キー|モデル/.test(Photo.err);renderPhoto();
+  });
+}
+
+/* ---- 結果 ---- */
+var PR=null;
+function cropURL(box){
+  var c=Photo.canvas;if(!c||!box)return '';
+  var W=c.width,H=c.height,y0=box[0]/1000*H,x0=box[1]/1000*W,y1=box[2]/1000*H,x1=box[3]/1000*W;
+  if(!(x1>x0&&y1>y0))return '';
+  var px=(x1-x0)*0.12+H*0.01,py=(y1-y0)*0.25+H*0.01;
+  x0=Math.max(0,x0-px);y0=Math.max(0,y0-py);x1=Math.min(W,x1+px);y1=Math.min(H,y1+py);
+  var w=x1-x0,h=y1-y0,k=Math.min(1,360/Math.max(w,h)),o=document.createElement('canvas');
+  o.width=Math.max(1,Math.round(w*k));o.height=Math.max(1,Math.round(h*k));
+  o.getContext('2d').drawImage(c,x0,y0,w,h,0,0,o.width,o.height);
+  return o.toDataURL('image/jpeg',0.85);
+}
+function finishPaper(s,res){
+  var p=null;Store.players.forEach(function(x){if(x.id===s.player)p=x;});if(!p)p=P();
+  var sess={t:Date.now(),k:'paper',r:s.r,f:0,o:1,code:s.code,it:res.map(function(r){return [r.q.id,r.ok,null,r.codes];})};
+  addSession(p,sess);
+  s.done=true;saveSheets();
+  res.forEach(function(r){r.crop=cropURL(r.box);});
+  PR={sheet:s,res:res,sess:sess,player:p};
+  renderPaperResult();show('result');
+}
+function renderPaperResult(){
+  var host=$('#v-result');host.textContent='';
+  var sess=PR.sess,sm=summarize(sess.it),now=pct(sm.ok,sm.n);
+  host.appendChild(el('h2',null,PR.player.name+' さんの けっか（用紙 '+PR.sheet.code+'）'));
+  var head=el('div','paperhead');
+  var sc=el('div','score',String(now));sc.appendChild(el('small',null,'点'));head.appendChild(sc);
+  var dl=el('dl','facts');
+  [['正解',sm.ok+' / '+sm.n+'問'],['正解率',now+'%'],['採点','写真（Gemini）']].forEach(function(r){dl.appendChild(el('dt',null,r[0]));dl.appendChild(el('dd',null,r[1]));});
+  head.appendChild(dl);host.appendChild(head);
+  host.appendChild(el('p','note','写真の字と正しい字を見くらべて、判定がちがっていたら「○に直す／×に直す」で直してください。直した結果が「きろく」に残ります。'));
+  var ul=el('ul','plist');
+  PR.res.forEach(function(r,i){
+    var it=sess.it[i],li=el('li','pq');
+    var top=el('div','pq-top');
+    top.appendChild(el('span','m'+(it[1]?'':' ng'),it[1]?'○':'×'));
+    var sent=el('span','sent');sent.appendChild(document.createTextNode((i+1)+'. '));sent.appendChild(sentRuby(r.q));top.appendChild(sent);
+    li.appendChild(top);
+    var pair=el('div','pq-pair');
+    var f1=el('figure');f1.appendChild(el('figcaption',null,'書いた字'));
+    if(r.crop){var im=el('img');im.alt=(i+1)+'番の書いた字';im.src=r.crop;f1.appendChild(im);}
+    else f1.appendChild(el('p','note','（写真の中の場所が見つかりませんでした）'));
+    pair.appendChild(f1);
+    var f2=el('figure');f2.appendChild(el('figcaption',null,'正しい字'));
+    var gl=el('div','pq-glyphs');
+    r.q.ks.forEach(function(k,j){var b=el('span','pq-g'+(r.codes.charAt(j)!=='o'?' bad':''));b.appendChild(modelSVG(k,{w:'5'}));gl.appendChild(b);});
+    f2.appendChild(gl);pair.appendChild(f2);
+    li.appendChild(pair);
+    var why=el('p','pq-why');
+    var readTxt=r.written?'「'+r.written+'」と読めました':'答えが読み取れませんでした（空らん）';
+    if(it[1]&&it[4])why.textContent='おうちの方が○に直しました';
+    else if(r.ok)why.textContent=readTxt+'。○';
+    else if(r.problems)why.textContent=readTxt+'。'+r.problems;
+    else why.textContent=readTxt+(r.notes?'（'+r.notes+'）':'');
+    if(r.conf!=null&&r.conf<0.6&&!it[4]){why.appendChild(el('span','kind',' 読み取りに自信がありません。写真を見て確かめてください'));}
+    li.appendChild(why);
+    var fx=el('button','link',it[1]?'×に直す':'○に直す');fx.type='button';
+    fx.addEventListener('click',function(){flipItem(PR.player,sess,i);renderPaperResult();});
+    li.appendChild(fx);
+    ul.appendChild(li);
+  });
+  host.appendChild(ul);
+  var b=el('div','btns');b.style.marginTop='20px';
+  var wrong=sess.it.filter(function(x){return !x[1];}).map(function(x){return BYID[x[0]];}).filter(Boolean);
+  if(wrong.length)b.appendChild(btn('まちがえた字を 画面で練習','primary',function(){startTest(wrong.slice(),'retry');}));
+  b.appendChild(btn('つぎの用紙をつくる',wrong.length?'':'primary',function(){newSheet();}));
+  b.appendChild(btn('きろくを見る','',function(){renderRecords();show('records');}));
+  host.appendChild(b);
 }
 
 /* ================= 起動 ================= */
