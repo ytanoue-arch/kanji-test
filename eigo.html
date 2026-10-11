@@ -164,6 +164,29 @@ details.hist summary .dt{color:var(--sub)}
 .kcheck{margin-top:10px}
 .kcheck-out .flash{margin:10px 0 0}
 .kcheck-raw{display:block;font-size:.8rem;color:var(--sub);margin-top:4px;word-break:break-all}
+
+.why{margin:2px 0 6px;font-weight:700;color:var(--pen)}
+.why.ok{color:var(--ok)}
+.ph{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:10px}
+.ph-cap{display:flex;flex-wrap:wrap;gap:4px 16px;font-family:var(--f-ipa);font-size:.95rem;color:var(--sub)}
+.ph-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ph-c{display:flex;flex-direction:column;align-items:center;min-width:2.4em;padding:4px 6px;border-radius:6px;background:var(--ok-soft);font-family:var(--f-ipa)}
+.ph-c b{font-weight:600;font-size:1.15rem;line-height:1.2}
+.ph-c i{font-style:normal;font-size:.8rem;color:var(--ok)}
+.ph-c.ng{background:var(--pen-soft)}
+.ph-c.ng i{color:var(--pen);font-weight:700;font-size:.95rem}
+.ph-notes{margin:8px 0 0;padding-left:1.1em;font-size:.92rem}
+.ph-notes b{font-family:var(--f-ipa);font-weight:600}
+.crit{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:10px;display:grid;gap:8px}
+.crit-h{font-weight:700;margin-top:12px}
+.crit .crit-h{margin-top:0}
+.crit-t{display:grid;grid-template-columns:9.5em minmax(0,1fr) 4.2em;gap:8px;align-items:center;font-size:.92rem}
+.crit-t b{text-align:right;font-variant-numeric:tabular-nums}
+.crit-bar{height:10px;background:var(--soft);border-radius:99px;overflow:hidden}
+.crit-bar i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.crit-bar i.low{background:var(--pen)}
+.crit-why{margin:2px 0 0;color:var(--sub);font-size:.88rem}
+@media (max-width:420px){.crit-t{grid-template-columns:7.5em minmax(0,1fr) 3.8em}}
 </style>
 </head>
 <body>
@@ -194,7 +217,7 @@ details.hist summary .dt{color:var(--sub)}
     <div class="row"><div class="lab">練習したい音</div><div class="chips" id="c-tags"></div>
       <p class="note">日本語を話す人がまちがえやすい点で分けています。えらんだどれかに当てはまる単語が出ます。</p></div>
     <div class="row"><div class="lab">問題の数</div><div class="chips" id="c-n"></div></div>
-    <div class="row"><div class="lab">判定</div><div><div class="chips" id="c-judge"></div><div id="gk"></div></div>
+    <div class="row"><div class="lab">合格ライン</div><div><div class="chips" id="c-judge"></div><div id="gk"></div></div>
       <p class="note" id="judge-note"></p></div>
     <details class="more">
       <summary>くわしい設定</summary>
@@ -535,7 +558,7 @@ function findTarget(w){
 }
 
 /* ================= 設定 ================= */
-var S={mode:'word',tags:TAG_ORDER.slice(),n:10,how:'auto',judge:'auto',ipa:'after',pre:false,player:null};
+var S={mode:'word',tags:TAG_ORDER.slice(),n:10,how:'auto',judge:'gemini',pass:85,ipa:'after',pre:false,player:null};
 try{var sv=JSON.parse(localStorage.getItem('eigo.settings')||'null');if(sv&&typeof sv==='object')Object.keys(S).forEach(function(k){if(sv[k]!=null)S[k]=sv[k];});}catch(e){}
 function saveSettings(){try{localStorage.setItem('eigo.settings',JSON.stringify(S));}catch(e){}}
 /* Gemini のキーは漢字テストと共通（同じサイトなので一度入れれば両方で使える） */
@@ -543,11 +566,7 @@ var G={key:'',model:'gemini-3.8-flash'};
 try{var gs=JSON.parse(localStorage.getItem('kanjiKaki.gemini')||'null');if(gs&&typeof gs==='object'){if(gs.key)G.key=String(gs.key);if(gs.model)G.model=String(gs.model);}}catch(e){}
 function saveG(){try{localStorage.setItem('kanjiKaki.gemini',JSON.stringify(G));}catch(e){}}
 var MODELS=[{v:'gemini-3.8-flash',label:'3.8 Flash（おすすめ）'},{v:'gemini-3.6-flash',label:'3.6 Flash'},{v:'gemini-3.5-flash-lite',label:'3.5 Flash-Lite（安い）'}];
-function judgeKind(){
-  if(S.judge==='gemini')return G.key?'g':null;
-  if(S.judge==='browser')return SR?'b':null;
-  return G.key?'g':(SR?'b':null);
-}
+function judgeKind(){return G.key?'g':null;}
 
 /* ================= きろく（この端末のブラウザに保存） ================= */
 var Store={players:[]};
@@ -685,16 +704,15 @@ function renderHome(){
   $('#mode-note').textContent=S.mode==='word'?'単語を1つずつ発音します。':'その単語を使った英文を、1文まるごと読みます。';
   chipGroup($('#c-tags'),TAG_ORDER.map(function(t){return {v:t,label:TAGS[t]};}),function(){return S.tags;},function(v){S.tags=v;},true);
   chipGroup($('#c-n'),[5,10,20,30].map(function(n){return {v:n,label:n+'問'};}),function(){return S.n;},function(v){S.n=v;});
-  chipGroup($('#c-judge'),[{v:'auto',label:'おまかせ'},{v:'gemini',label:'Gemini（くわしく訂正）'},{v:'browser',label:'ブラウザの音声認識（かんたん）',disabled:!SR}],function(){return S.judge;},function(v){S.judge=v;});
+  chipGroup($('#c-judge'),[{v:80,label:'80点'},{v:85,label:'85点（きびしい）'},{v:90,label:'90点（とてもきびしい）'}],function(){return S.pass;},function(v){S.pass=v;});
   chipGroup($('#c-how'),[{v:'auto',label:'おまかせ'},{v:'random',label:'ランダム'},{v:'weak',label:'にがてだけ'}],function(){return S.how;},function(v){S.how=v;});
   chipGroup($('#c-ipa'),[{v:'after',label:'答えたあとに出す'},{v:'before',label:'はじめから出す'},{v:'never',label:'出さない'}],function(){return S.ipa;},function(v){S.ipa=v;});
   chipGroup($('#c-pre'),[{v:false,label:'答えたあとに聞ける'},{v:true,label:'先に聞ける'}],function(){return S.pre;},function(v){S.pre=v;});
   var j=judgeKind(),gk=$('#gk');gk.textContent='';
-  if(S.judge!=='browser'){var kb=keyBox(renderHome);if(G.key){var dd=el('details','more');dd.style.marginTop='10px';dd.open=kOpen;dd.addEventListener('toggle',function(){kOpen=dd.open;});dd.appendChild(el('summary',null,'Geminiの設定（キーの確認・モデル）'));dd.appendChild(kb);gk.appendChild(dd);}else{kb.style.marginTop='10px';gk.appendChild(kb);}}
+  {var kb=keyBox(renderHome);if(G.key){var dd=el('details','more');dd.style.marginTop='10px';dd.open=kOpen;dd.addEventListener('toggle',function(){kOpen=dd.open;});dd.appendChild(el('summary',null,'Geminiの設定（キーの確認・モデル）'));dd.appendChild(kb);gk.appendChild(dd);}else{kb.style.marginTop='10px';gk.appendChild(kb);}}
   $('#judge-note').textContent=
-    j==='g'?'録音した声をGeminiが聞いて、○×と、どの音をどう直すかを日本語で教えます（1問 数秒かかります）。':
-    j==='b'?'ブラウザの音声認識で、その英語として聞き取れたかだけを判定します。くわしい訂正は出ません。GeminiのAPIキーを入れると、くわしく訂正できます。':
-    'このブラウザでは音声認識が使えません。GeminiのAPIキーを入れてください。';
+    j==='g'?'合格ライン以上で、しかも 音のまちがい・アクセントのずれが1つもないときだけ○になります。録音した声をGeminiがきびしく採点し、点数の内わけと、どの音がどうちがったかを示します（1問 数秒かかります）。':
+    '採点にはGeminiを使います。GeminiのAPIキーを入れてください。';
   var pl=pool(),n=pl.length,p=P();
   if(S.how==='weak'){var st=stats(p);n=pl.filter(function(w){return isWeak(st.q[w.id]);}).length;}
   $('#pool').textContent=(S.how==='weak'?'にがてな単語：':'えらんだ はんいの単語：')+n+'語';
@@ -834,36 +852,49 @@ function callGemini(text,wavB64,schema){
   return go(true);
 }
 var ISSUE={type:'OBJECT',properties:{part:{type:'STRING'},problem:{type:'STRING'},tip:{type:'STRING'}},required:['part','problem']};
-var SCHEMA_WORD={type:'OBJECT',properties:{heard:{type:'STRING'},ok:{type:'BOOLEAN'},score:{type:'INTEGER'},stress_ok:{type:'BOOLEAN'},issues:{type:'ARRAY',items:ISSUE},comment:{type:'STRING'}},required:['heard','ok','score']};
-var SCHEMA_SENT={type:'OBJECT',properties:{heard:{type:'STRING'},ok:{type:'BOOLEAN'},score:{type:'INTEGER'},
-  words:{type:'ARRAY',items:{type:'OBJECT',properties:{word:{type:'STRING'},ok:{type:'BOOLEAN'}},required:['word','ok']}},issues:{type:'ARRAY',items:ISSUE},comment:{type:'STRING'}},required:['heard','ok','score']};
+var PHON={type:'OBJECT',properties:{target:{type:'STRING'},heard:{type:'STRING'},ok:{type:'BOOLEAN'},note:{type:'STRING'}},required:['target','heard','ok']};
+var CRIT={type:'OBJECT',properties:{key:{type:'STRING'},score:{type:'INTEGER'},reason:{type:'STRING'}},required:['key','score','reason']};
+/* 採点の内わけ（合計100点）。点数はこちらで上限を守って合計する */
+var RUBRIC={
+  word:[{key:'consonants',name:'子音',max:30},{key:'vowels',name:'母音',max:25},{key:'stress',name:'アクセント',max:20},{key:'no_extra_vowels',name:'母音を足さない',max:15},{key:'clarity',name:'聞き取りやすさ',max:10}],
+  sent:[{key:'sounds',name:'一つ一つの音',max:30},{key:'focus_word',name:'ポイントの単語',max:20},{key:'stress_rhythm',name:'強弱とリズム',max:20},{key:'linking',name:'音のつながり・弱い形',max:15},{key:'fluency',name:'なめらかさ',max:15}]
+};
+var SCHEMA_WORD={type:'OBJECT',properties:{heard:{type:'STRING'},heard_ipa:{type:'STRING'},stress_ok:{type:'BOOLEAN'},phonemes:{type:'ARRAY',items:PHON},criteria:{type:'ARRAY',items:CRIT},issues:{type:'ARRAY',items:ISSUE},comment:{type:'STRING'}},required:['heard','heard_ipa','phonemes','criteria']};
+var SCHEMA_SENT={type:'OBJECT',properties:{heard:{type:'STRING'},heard_ipa:{type:'STRING'},stress_ok:{type:'BOOLEAN'},
+  words:{type:'ARRAY',items:{type:'OBJECT',properties:{word:{type:'STRING'},ok:{type:'BOOLEAN'},note:{type:'STRING'}},required:['word','ok']}},
+  phonemes:{type:'ARRAY',items:PHON},criteria:{type:'ARRAY',items:CRIT},issues:{type:'ARRAY',items:ISSUE},comment:{type:'STRING'}},required:['heard','words','phonemes','criteria']};
+function rubricText(kind){return RUBRIC[kind].map(function(c){return '"'+c.key+'" (max '+c.max+')';}).join(', ');}
 var COMMON=[
-  'Typical problems for Japanese speakers: r/l confusion; th pronounced as s, z or d; v pronounced as b; f pronounced as h; extra vowels added after consonants (katakana style, e.g. "desuku" for "desk"); wrong vowels (ʌ, æ, ɑ, ɜːr); flat rhythm or stress on the wrong syllable; pronouncing silent letters.',
-  'Accept normal American or British variants. Judge what you actually hear in the recording. Do not assume the student said the target correctly.',
-  'Write "problem", "tip" and "comment" in natural, easy Japanese for a Japanese high school student. You may use IPA symbols and the letters of the word. Give practical mouth and tongue tips.',
-  'If there is no speech in the recording, set heard to an empty string, ok to false and score to 0.'
+  'GRADING POLICY: Grade STRICTLY, like a native-speaker teacher grading a pronunciation exam. Deduct points for every Japanese-accented substitution even if the word is still understandable. A score above 90 means near-native. A typical Japanese learner with a noticeable accent should get 50-75.',
+  'Typical problems for Japanese speakers to check carefully: r/l confusion (and r sounding like a Japanese flap); th pronounced as s, z, t or d; v pronounced as b; f pronounced as h or ɸ; si/shi confusion; extra vowels added after consonants (katakana style, e.g. "desuku" for "desk", "-o" after final t/d); wrong vowels (ʌ, æ, ɑ, ɜːr, ɪ vs iː, ʊ vs uː); missing schwa reduction; flat rhythm or stress on the wrong syllable; pronouncing silent letters.',
+  'Accept normal General American or British variants. Judge only what you actually hear. Never assume the student said the target correctly; if a sound is unclear, mark it not ok.',
+  'Write "reason", "note", "problem", "tip" and "comment" in natural Japanese for a Japanese high school student. You may use IPA and the letters of the word. "reason" must say concretely why points were deducted (which sound, what was heard), or say what was good if full marks. Tips must be practical (tongue, lips, jaw, airflow).',
+  'If there is no speech, set heard to "", every score to 0, every phoneme ok=false.'
 ].join('\n');
 function promptWord(w){
-  return ['You are a strict but encouraging English pronunciation coach for a Japanese high school student.',
+  return ['You are an English pronunciation examiner for a Japanese high school student.',
   'Target word: "'+w.w+'"  (General American: /'+w.ipa+'/).',
   'The audio is the student trying to say this one word.',
-  '1) In "heard", write the English word you actually heard (best guess).',
-  '2) Check every sound and the word stress against the target. "stress_ok" is whether the stress is on the right syllable.',
-  '3) "ok" is true only if a native speaker would clearly understand it as the target word and there is no major error. "score" is 0-100.',
-  '4) "issues": up to 3 most important problems, most important first. "part" is the letters or IPA sound concerned.',
-  '5) "comment": one short sentence in Japanese (what was good, or the single most important point).',
+  '1) "heard": the English word you actually heard (best guess). "heard_ipa": a narrow IPA transcription of what the student actually said (show added vowels, substitutions).',
+  '2) "phonemes": split the target IPA into its phonemes in order (diphthongs and r-colored vowels as one unit; include the stressed vowel). For each give "target" (IPA), "heard" (IPA of what the student produced, "-" if omitted), "ok", and a short Japanese "note" when not ok. If the student added an extra vowel, add an item with target "-" and the added vowel as "heard", ok=false.',
+  '3) "stress_ok": whether the primary stress is on the correct syllable.',
+  '4) "criteria": give a score and a reason for each of these, never above the max: '+rubricText('word')+'.',
+  '5) "issues": up to 3 most important problems with tips, most important first. "part" is the letters or IPA sound concerned.',
+  '6) "comment": one short Japanese sentence summarizing the result.',
   COMMON].join('\n');
 }
 function promptSent(w){
-  return ['You are a strict but encouraging English pronunciation coach for a Japanese high school student.',
+  return ['You are an English pronunciation examiner for a Japanese high school student.',
   'Target sentence: "'+w.s+'"',
   'Focus word: "'+w.w+'" (General American: /'+w.ipa+'/).',
   'The audio is the student reading this sentence aloud.',
-  '1) In "heard", write the sentence you actually heard.',
-  '2) In "words", list every word of the target sentence in order with "ok" = whether it was pronounced acceptably (missing words are not ok).',
-  '3) "ok" is true only if the whole sentence is clearly understandable to a native speaker, the focus word is pronounced well, and there is no major error. "score" is 0-100, including rhythm and linking.',
-  '4) "issues": up to 3 most important problems, most important first (check the focus word especially). "part" is the word or sound concerned.',
-  '5) "comment": one short sentence in Japanese.',
+  '1) "heard": the sentence you actually heard. "heard_ipa": a narrow IPA transcription of how the student said the focus word.',
+  '2) "words": every word of the target sentence in order with "ok" (missing or clearly mispronounced words are not ok) and a short Japanese "note" when not ok.',
+  '3) "phonemes": the phonemes of the focus word, in order, each with "target" (IPA), "heard" (IPA, "-" if omitted), "ok" and a short Japanese "note" when not ok. Add an item with target "-" for any extra vowel the student inserted.',
+  '4) "stress_ok": whether the sentence stress and the focus word stress are correct.',
+  '5) "criteria": give a score and a reason for each of these, never above the max: '+rubricText('sent')+'.',
+  '6) "issues": up to 3 most important problems with tips, most important first.',
+  '7) "comment": one short Japanese sentence summarizing the result.',
   COMMON].join('\n');
 }
 
@@ -1005,9 +1036,20 @@ function judgeG(wav){
   callGemini(T.mode==='word'?promptWord(w):promptSent(w),b64(wav.buf),T.mode==='word'?SCHEMA_WORD:SCHEMA_SENT).then(function(r){
     if(T.w!==w||view!=='test')return;
     r=r||{};
-    var out={heard:String(r.heard||''),ok:!!r.ok,score:Math.max(0,Math.min(100,parseInt(r.score,10)||0)),stress_ok:r.stress_ok,
-      issues:Array.isArray(r.issues)?r.issues.slice(0,3):[],comment:String(r.comment||''),words:Array.isArray(r.words)?r.words:null};
-    if(out.score<60)out.ok=false;
+    var rub=RUBRIC[T.mode],got={};
+    (Array.isArray(r.criteria)?r.criteria:[]).forEach(function(c){if(c&&c.key)got[String(c.key)]=c;});
+    var crit=rub.map(function(c){var g=got[c.key]||{};var sc=Math.max(0,Math.min(c.max,parseInt(g.score,10)||0));return {name:c.name,max:c.max,score:sc,reason:String(g.reason||'')};});
+    var total=crit.reduce(function(a,c){return a+c.score;},0);
+    var ph=(Array.isArray(r.phonemes)?r.phonemes:[]).map(function(x){return {target:String(x.target||''),heard:String(x.heard||''),ok:x.ok!==false,note:String(x.note||'')};});
+    var words=Array.isArray(r.words)?r.words:null;
+    var badPh=ph.filter(function(x){return !x.ok;}).length,badW=words?words.filter(function(x){return x&&x.ok===false;}).length:0;
+    var reasons=[];
+    if(total<S.pass)reasons.push('点数が合格ライン（'+S.pass+'点）に届いていません');
+    if(badPh)reasons.push('ちがう音が '+badPh+'か所あります');
+    if(r.stress_ok===false)reasons.push('アクセントがずれています');
+    if(badW)reasons.push('うまく言えていない単語が '+badW+'語あります');
+    var out={heard:String(r.heard||''),heard_ipa:String(r.heard_ipa||''),score:total,crit:crit,phonemes:ph,stress_ok:r.stress_ok,
+      ok:!reasons.length,why:reasons,issues:Array.isArray(r.issues)?r.issues.slice(0,3):[],comment:String(r.comment||''),words:words};
     showResult(out,url);
   },function(e){
     if(T.w!==w||view!=='test')return;
@@ -1029,9 +1071,38 @@ function showResult(r,wavUrl){
   if(typeof r.score==='number')v.appendChild(el('span','sc',r.score+'点'));
   if(T.try>1)v.appendChild(el('span','sc','（'+T.try+'回め・練習）'));
   p.appendChild(v);
+  if(r.why&&r.why.length)p.appendChild(el('p','why','×の理由：'+r.why.join('／')));
+  else if(r.crit)p.appendChild(el('p','why ok','合格ライン（'+S.pass+'点）以上で、音のまちがいもありません。'));
   var h=el('p','heard');h.appendChild(document.createTextNode('聞こえた英語：'));h.appendChild(el('q',null,r.heard||'（聞き取れませんでした）'));p.appendChild(h);
-  if(r.stress_ok===false&&T.mode==='word')p.appendChild(el('p','note','アクセント（強く読む場所）がずれています。'));
+  if(r.phonemes&&r.phonemes.length){
+    var box=el('div','ph');
+    var cap=el('div','ph-cap');cap.appendChild(el('span',null,'お手本 /'+T.w.ipa+'/'));if(r.heard_ipa)cap.appendChild(el('span',null,'あなた ['+r.heard_ipa.replace(/^[\/\[]|[\/\]]$/g,'')+']'));box.appendChild(cap);
+    var row=el('div','ph-row');
+    r.phonemes.forEach(function(x){
+      var c=el('span','ph-c'+(x.ok?'':' ng'));c.appendChild(el('b',null,x.target==='-'?'＋':x.target));
+      c.appendChild(el('i',null,x.ok?'○':(x.heard||'?')));row.appendChild(c);
+    });
+    box.appendChild(row);
+    var notes=r.phonemes.filter(function(x){return !x.ok&&x.note;});
+    if(notes.length){var nl=el('ul','ph-notes');notes.forEach(function(x){var li=el('li');li.appendChild(el('b',null,(x.target==='-'?'よけいな音 '+x.heard:'/'+x.target+'/ → ['+x.heard+']')+'：'));li.appendChild(document.createTextNode(x.note));nl.appendChild(li);});box.appendChild(nl);}
+    if(r.stress_ok===false)box.appendChild(el('p','note','アクセント（強く読む場所）がずれています。'));
+    p.appendChild(box);
+  }
+  if(r.crit){
+    var tb=el('div','crit');tb.appendChild(el('div','crit-h','点数の内わけ（'+r.score+' / 100点）'));
+    r.crit.forEach(function(c){
+      var row2=el('div','crit-r');
+      var top=el('div','crit-t');top.appendChild(el('span',null,c.name));
+      var tr=el('span','crit-bar');var bi=el('i');bi.style.width=Math.round(c.score/c.max*100)+'%';if(c.score<c.max*0.8)bi.className='low';tr.appendChild(bi);top.appendChild(tr);
+      top.appendChild(el('b',null,c.score+' / '+c.max));row2.appendChild(top);
+      if(c.reason)row2.appendChild(el('p','crit-why',c.reason));
+      tb.appendChild(row2);
+    });
+    p.appendChild(tb);
+  }
+  if(r.words&&T.mode==='sent'){var wn=r.words.filter(function(x){return x&&x.ok===false&&x.note;});if(wn.length){var wl=el('ul','ph-notes');wn.forEach(function(x){var li=el('li');li.appendChild(el('b',null,String(x.word)+'：'));li.appendChild(document.createTextNode(String(x.note)));wl.appendChild(li);});p.appendChild(wl);}}
   if(r.issues&&r.issues.length){
+    p.appendChild(el('div','crit-h','直し方'));
     var ul=el('ul','issues');
     r.issues.forEach(function(it){var li=el('li');li.appendChild(el('span','part',String(it.part||'')));li.appendChild(document.createTextNode(String(it.problem||'')));if(it.tip)li.appendChild(el('span','tip',String(it.tip)));ul.appendChild(li);});
     p.appendChild(ul);
@@ -1042,7 +1113,6 @@ function showResult(r,wavUrl){
   var nx=btn(last?'結果を見る':'つぎへ','primary',function(){T.i++;next();});b.appendChild(nx);
   if(T.first&&!T.first.ok&&r===T.first)b.appendChild(btn('いまのは あっていた','pen',function(){var x=T.res[T.res.length-1];x.ok=1;x.fixed=1;T.i++;next();}));
   p.appendChild(b);
-  if(r.ok&&T.try===1)T.auto=setTimeout(function(){if(T.state==='done'&&T.first===r)nx.click();},2600);
 }
 ['click','touchstart'].forEach(function(evn){$('#t-panel').addEventListener(evn,function(){clearTimeout(T.auto);},{passive:true});$('#t-listen').addEventListener(evn,function(){clearTimeout(T.auto);},{passive:true});});
 function endTest(abort){
