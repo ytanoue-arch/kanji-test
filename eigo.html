@@ -160,6 +160,10 @@ details.hist summary{list-style:none;display:flex;gap:12px;flex-wrap:wrap;paddin
 details.hist summary .pt{font-family:var(--f-en);font-weight:700;color:var(--pen);font-size:1.25rem;line-height:1.3;min-width:3.4em}
 details.hist summary .dt{color:var(--sub)}
 .empty{background:var(--paper);border:1px dashed var(--line);border-radius:8px;padding:18px;color:var(--sub)}
+
+.kcheck{margin-top:10px}
+.kcheck-out .flash{margin:10px 0 0}
+.kcheck-raw{display:block;font-size:.8rem;color:var(--sub);margin-top:4px;word-break:break-all}
 </style>
 </head>
 <body>
@@ -593,6 +597,51 @@ function chipGroup(host,items,get,set,multi){
     host.appendChild(b);
   });
 }
+/* ---- APIキーの確認：モデル一覧を取りにいき、使えるかと使えるモデルを表示する ---- */
+function keyCheckBox(onChange){
+  var wrap=el('div','kcheck');
+  var out=el('div','kcheck-out');out.setAttribute('aria-live','polite');
+  var b=btn('キーを確かめる','',function(){
+    if(!G.key){out.textContent='先にキーを保存してください。';return;}
+    b.disabled=true;out.textContent='確かめています…';
+    fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000',{headers:{'x-goog-api-key':G.key}})
+    .then(function(r){return r.json().catch(function(){return {};}).then(function(j){return {r:r,j:j};});})
+    .then(function(x){
+      b.disabled=false;out.textContent='';
+      if(!x.r.ok){
+        var msg=(x.j&&x.j.error&&x.j.error.message)||'',reason='';
+        try{(x.j.error.details||[]).forEach(function(d){if(d.reason)reason=d.reason;});}catch(e){}
+        var p=el('p','flash err');
+        var hint=reason==='API_KEY_INVALID'||/API key not valid/i.test(msg)?'キーが正しくありません。コピーしたときに文字が欠けていないか、前後に空白が入っていないか確かめて、もう一度貼り付けてください。':
+          /referer|referrer/i.test(msg)?'キーに「ウェブサイトの制限」がかかっていて、このページから使えません。制限に ytanoue-arch.github.io/* を入れるか、制限を外してください。':
+          /API has not been used|is disabled|SERVICE_DISABLED/i.test(msg+reason)?'このキーのプロジェクトで「Generative Language API」が有効になっていません。Google AI Studioでキーを作りなおすのがかんたんです。':
+          /API_KEY_SERVICE_BLOCKED|blocked/i.test(msg+reason)?'キーの「APIの制限」で、Gemini（Generative Language API）が許可されていません。':
+          x.r.status===403?'このキーではGeminiを使えません。会社や学校のGoogleアカウントで作ったキーは、管理者の設定で使えないことがあります。個人のGoogleアカウントで作ってみてください。':
+          x.r.status===429?'回数の上限に達しています。少し待つか、Google AI Studioで上限を確かめてください。':
+          'キーを確かめられませんでした。';
+        p.appendChild(el('b',null,'× '+hint));
+        p.appendChild(el('span','kcheck-raw','（Googleからの返事：'+x.r.status+' '+(reason?reason+' ':'')+msg.slice(0,160)+'）'));
+        out.appendChild(p);return;
+      }
+      var ms=(x.j.models||[]).filter(function(m){return (m.supportedGenerationMethods||[]).indexOf('generateContent')>=0;}).map(function(m){return String(m.name||'').replace(/^models\//,'');});
+      var flash=ms.filter(function(n){return /^gemini-[\d.]+-flash(-lite)?$/.test(n);});
+      var ok=el('p','flash');ok.appendChild(el('b',null,'○ キーは使えます。'));
+      if(ms.indexOf(G.model)>=0)ok.appendChild(document.createTextNode(' いまのモデル（'+G.model+'）も使えます。'));
+      else{
+        ok.appendChild(document.createTextNode(' ただし、いま選んでいるモデル（'+G.model+'）は、このキーでは使えません。'));
+        if(flash.length){
+          var best=flash.slice().sort(function(a,c){var va=parseFloat(a.split('-')[1]),vc=parseFloat(c.split('-')[1]);return (vc-va)||((a.indexOf('lite')>=0)-(c.indexOf('lite')>=0));})[0];
+          ok.appendChild(el('br'));
+          ok.appendChild(btn(best+' に切りかえる','primary',function(){G.model=best;saveG();if(onChange)onChange();}));
+        }
+      }
+      out.appendChild(ok);
+      if(flash.length)out.appendChild(el('p','note','このキーで使えるFlashモデル：'+flash.join('、')));
+    },function(){b.disabled=false;out.textContent='';out.appendChild(el('p','flash err','× Googleにつながりませんでした。インターネットの接続を確かめてください。'));});
+  });
+  wrap.appendChild(b);wrap.appendChild(out);
+  return wrap;
+}
 var keySeq=0;
 function keyBox(onSaved){
   var box=el('div','gkey'),kid='in-gkey-'+(++keySeq);
@@ -610,6 +659,7 @@ function keyBox(onSaved){
   var a=el('a',null,'Google AI Studio');a.href='https://aistudio.google.com/apikey';a.target='_blank';a.rel='noopener';n.appendChild(a);
   n.appendChild(document.createTextNode(' で作れます。漢字テストで入れたキーと共通です。キーはこの端末のブラウザの中だけに保存され、録音した声といっしょにGoogleへ送られます。無料枠では、送った声がGoogleのサービス改善に使われることがあります。'));
   box.appendChild(n);
+  if(G.key)box.appendChild(keyCheckBox(onSaved));
   if(G.key){var st=el('p','note');st.appendChild(el('b',null,'キーは保存ずみです（…'+G.key.slice(-4)+'）。'));
     var del=el('button','link','このキーを消す');del.type='button';del.addEventListener('click',function(){G.key='';saveG();if(onSaved)onSaved();});st.appendChild(document.createTextNode(' '));st.appendChild(del);box.appendChild(st);}
   return box;
@@ -628,6 +678,7 @@ function addName(){
 $('#b-addname').addEventListener('click',addName);
 $('#in-name').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.isComposing)addName();});
 function pool(){return WORDS.filter(function(w){return w.tags.some(function(t){return S.tags.indexOf(t)>=0;});});}
+var kOpen=false;
 function renderHome(){
   renderPlayers();
   chipGroup($('#c-mode'),[{v:'word',label:'単語'},{v:'sent',label:'英文'}],function(){return S.mode;},function(v){S.mode=v;});
@@ -639,7 +690,7 @@ function renderHome(){
   chipGroup($('#c-ipa'),[{v:'after',label:'答えたあとに出す'},{v:'before',label:'はじめから出す'},{v:'never',label:'出さない'}],function(){return S.ipa;},function(v){S.ipa=v;});
   chipGroup($('#c-pre'),[{v:false,label:'答えたあとに聞ける'},{v:true,label:'先に聞ける'}],function(){return S.pre;},function(v){S.pre=v;});
   var j=judgeKind(),gk=$('#gk');gk.textContent='';
-  if(S.judge!=='browser'&&(!G.key||S.judge==='gemini')){var kb=keyBox(renderHome);kb.style.marginTop='10px';gk.appendChild(kb);}
+  if(S.judge!=='browser'){var kb=keyBox(renderHome);if(G.key){var dd=el('details','more');dd.style.marginTop='10px';dd.open=kOpen;dd.addEventListener('toggle',function(){kOpen=dd.open;});dd.appendChild(el('summary',null,'Geminiの設定（キーの確認・モデル）'));dd.appendChild(kb);gk.appendChild(dd);}else{kb.style.marginTop='10px';gk.appendChild(kb);}}
   $('#judge-note').textContent=
     j==='g'?'録音した声をGeminiが聞いて、○×と、どの音をどう直すかを日本語で教えます（1問 数秒かかります）。':
     j==='b'?'ブラウザの音声認識で、その英語として聞き取れたかだけを判定します。くわしい訂正は出ません。GeminiのAPIキーを入れると、くわしく訂正できます。':

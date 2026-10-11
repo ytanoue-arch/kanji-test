@@ -256,6 +256,10 @@ details.hist summary .dt{color:var(--sub)}
   .sh-q{padding:1.6mm 0;min-height:0;break-inside:avoid}
   .sh-foot{margin-top:2mm}
 }
+
+.kcheck{margin-top:10px}
+.kcheck-out .flash{margin:10px 0 0}
+.kcheck-raw{display:block;font-size:.8rem;color:var(--sub);margin-top:4px;word-break:break-all}
 </style>
 
 </head>
@@ -2890,6 +2894,51 @@ function renderPaper(){
 }
 
 /* ---- Gemini の設定 ---- */
+/* ---- APIキーの確認：モデル一覧を取りにいき、使えるかと使えるモデルを表示する ---- */
+function keyCheckBox(onChange){
+  var wrap=el('div','kcheck');
+  var out=el('div','kcheck-out');out.setAttribute('aria-live','polite');
+  var b=btn('キーを確かめる','',function(){
+    if(!G.key){out.textContent='先にキーを保存してください。';return;}
+    b.disabled=true;out.textContent='確かめています…';
+    fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000',{headers:{'x-goog-api-key':G.key}})
+    .then(function(r){return r.json().catch(function(){return {};}).then(function(j){return {r:r,j:j};});})
+    .then(function(x){
+      b.disabled=false;out.textContent='';
+      if(!x.r.ok){
+        var msg=(x.j&&x.j.error&&x.j.error.message)||'',reason='';
+        try{(x.j.error.details||[]).forEach(function(d){if(d.reason)reason=d.reason;});}catch(e){}
+        var p=el('p','flash err');
+        var hint=reason==='API_KEY_INVALID'||/API key not valid/i.test(msg)?'キーが正しくありません。コピーしたときに文字が欠けていないか、前後に空白が入っていないか確かめて、もう一度貼り付けてください。':
+          /referer|referrer/i.test(msg)?'キーに「ウェブサイトの制限」がかかっていて、このページから使えません。制限に ytanoue-arch.github.io/* を入れるか、制限を外してください。':
+          /API has not been used|is disabled|SERVICE_DISABLED/i.test(msg+reason)?'このキーのプロジェクトで「Generative Language API」が有効になっていません。Google AI Studioでキーを作りなおすのがかんたんです。':
+          /API_KEY_SERVICE_BLOCKED|blocked/i.test(msg+reason)?'キーの「APIの制限」で、Gemini（Generative Language API）が許可されていません。':
+          x.r.status===403?'このキーではGeminiを使えません。会社や学校のGoogleアカウントで作ったキーは、管理者の設定で使えないことがあります。個人のGoogleアカウントで作ってみてください。':
+          x.r.status===429?'回数の上限に達しています。少し待つか、Google AI Studioで上限を確かめてください。':
+          'キーを確かめられませんでした。';
+        p.appendChild(el('b',null,'× '+hint));
+        p.appendChild(el('span','kcheck-raw','（Googleからの返事：'+x.r.status+' '+(reason?reason+' ':'')+msg.slice(0,160)+'）'));
+        out.appendChild(p);return;
+      }
+      var ms=(x.j.models||[]).filter(function(m){return (m.supportedGenerationMethods||[]).indexOf('generateContent')>=0;}).map(function(m){return String(m.name||'').replace(/^models\//,'');});
+      var flash=ms.filter(function(n){return /^gemini-[\d.]+-flash(-lite)?$/.test(n);});
+      var ok=el('p','flash');ok.appendChild(el('b',null,'○ キーは使えます。'));
+      if(ms.indexOf(G.model)>=0)ok.appendChild(document.createTextNode(' いまのモデル（'+G.model+'）も使えます。'));
+      else{
+        ok.appendChild(document.createTextNode(' ただし、いま選んでいるモデル（'+G.model+'）は、このキーでは使えません。'));
+        if(flash.length){
+          var best=flash.slice().sort(function(a,c){var va=parseFloat(a.split('-')[1]),vc=parseFloat(c.split('-')[1]);return (vc-va)||((a.indexOf('lite')>=0)-(c.indexOf('lite')>=0));})[0];
+          ok.appendChild(el('br'));
+          ok.appendChild(btn(best+' に切りかえる','primary',function(){G.model=best;saveG();if(onChange)onChange();}));
+        }
+      }
+      out.appendChild(ok);
+      if(flash.length)out.appendChild(el('p','note','このキーで使えるFlashモデル：'+flash.join('、')));
+    },function(){b.disabled=false;out.textContent='';out.appendChild(el('p','flash err','× Googleにつながりませんでした。インターネットの接続を確かめてください。'));});
+  });
+  wrap.appendChild(b);wrap.appendChild(out);
+  return wrap;
+}
 var keySeq=0;
 function keyBox(onSaved){
   var box=el('div','gkey'),kid='in-gkey-'+(++keySeq);
@@ -2914,6 +2963,7 @@ function keyBox(onSaved){
   var a=el('a',null,'Google AI Studio');a.href='https://aistudio.google.com/apikey';a.target='_blank';a.rel='noopener';n.appendChild(a);
   n.appendChild(document.createTextNode(' で作れます。キーはこの端末のブラウザの中だけに保存され、写真といっしょにGoogleへ送られます。無料枠では、送った写真がGoogleのサービス改善に使われることがあります。'));
   box.appendChild(n);
+  if(G.key)box.appendChild(keyCheckBox(onSaved));
   if(G.key){
     var st=el('p','note');st.appendChild(el('b',null,'キーは保存ずみです（…'+G.key.slice(-4)+'）。'));
     var del=el('button','link','このキーを消す');del.type='button';del.addEventListener('click',function(){G.key='';saveG();if(onSaved)onSaved();});
