@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>英語 発音テスト</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="発音テスト">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* 黒板の見出し＋英語ノート。漢字テストと同じ色でそろえ、英語は本の書体で大きく見せる */
+:root{
+  --bg:#EDF1EA; --paper:#FDFDF9; --ink:#1F2B29; --sub:#5A6A66; --rule:#B9CDC3; --line:#D0D9D3;
+  --board:#2B5648; --board-ink:#F3F6F0; --chalk:#F2D36B; --wood:#B98B5E;
+  --pen:#D8352C; --pen-soft:#F6D9D5; --soft:#E3EAE4; --focus:#1E6FD9; --ok:#2B7A4B; --ok-soft:#DCEFE3;
+  --f-en:"Literata","Georgia","Times New Roman",serif;
+  --f-ipa:"Noto Sans","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --f-ui:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans","Yu Gothic UI","Meiryo","Noto Sans CJK JP","Noto Sans JP",sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131C19; --paper:#1B2925; --ink:#E9EFE9; --sub:#9CAEA7; --rule:#36524A; --line:#2E423A;
+    --board:#2B5648; --board-ink:#F3F6F0; --chalk:#F2D36B; --wood:#8C6A48;
+    --pen:#FF7466; --pen-soft:#4A2A27; --soft:#22332D; --focus:#8AB8FF; --ok:#7FD39C; --ok-soft:#1F3A2B;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131C19; --paper:#1B2925; --ink:#E9EFE9; --sub:#9CAEA7; --rule:#36524A; --line:#2E423A;
+  --board:#2B5648; --board-ink:#F3F6F0; --chalk:#F2D36B; --wood:#8C6A48;
+  --pen:#FF7466; --pen-soft:#4A2A27; --soft:#22332D; --focus:#8AB8FF; --ok:#7FD39C; --ok-soft:#1F3A2B;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-ui);font-size:16px;line-height:1.7;-webkit-text-size-adjust:100%}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+a{color:inherit}
+
+.board{background:var(--board);color:var(--board-ink);border-bottom:6px solid var(--wood)}
+.board-in{max-width:760px;margin:0 auto;padding:14px 16px 12px;display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.board h1{font-weight:700;font-size:1.35rem;line-height:1.2;margin:0;letter-spacing:.04em}
+.board .range{font-family:var(--f-en);color:var(--chalk);font-size:1rem;margin-right:auto;font-style:italic}
+.nav{display:flex;gap:6px}
+.nav button{background:transparent;border:1.5px solid transparent;color:var(--board-ink);border-radius:999px;padding:4px 16px;font-weight:700}
+.nav button[aria-current="page"]{border-color:var(--chalk);color:var(--chalk)}
+.home-link{color:var(--board-ink);opacity:.8;font-size:.85rem}
+
+main{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:20px 48px}
+h2{font-size:1.2rem;margin:0 0 14px;font-weight:700;text-wrap:balance}
+h3{font-size:1rem;margin:28px 0 10px;font-weight:700}
+.note{color:var(--sub);font-size:.875rem;margin:6px 0 0}
+.row{display:grid;grid-template-columns:7.5em 1fr;gap:6px 12px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+.row .lab{font-weight:700;padding-top:6px}
+.row .note{grid-column:2}
+@media (max-width:520px){.row{grid-template-columns:1fr}.row .lab{padding-top:0}.row .note{grid-column:1}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--paper);border:1.5px solid var(--line);border-radius:999px;padding:6px 16px;min-height:40px;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--board);border-color:var(--board);color:var(--board-ink);font-weight:700}
+.chip.add{border-style:dashed;color:var(--sub)}
+.addbox{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+input[type=text],input[type=password]{background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;min-height:44px;min-width:0;flex:1 1 12em}
+details.more{border-top:1px solid var(--line);padding:10px 0 0}
+details.more summary{font-weight:700;cursor:pointer;padding:4px 0 8px}
+.pool{margin:16px 0 10px;font-weight:700}
+.btn{background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:10px 18px;min-height:48px;font-weight:700}
+.btn.primary{background:var(--board);border-color:var(--board);color:var(--board-ink)}
+.btn.pen{background:transparent;border-color:var(--pen);color:var(--pen)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--sub);text-decoration:underline;font-weight:500}
+.btn.big{width:100%;font-size:1.15rem;min-height:60px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.flash{background:var(--soft);border-radius:8px;padding:10px 14px;margin:0 0 14px}
+.flash.err{background:var(--pen-soft)}
+.gkey label{display:block;font-weight:700;margin-bottom:4px}
+
+/* ---------- テスト ---------- */
+.tbar{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-weight:700;font-variant-numeric:tabular-nums}
+.prog{flex:1;height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--board);border-radius:99px;transition:width .3s}
+.card{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--board);border-radius:8px;padding:16px 18px 18px;position:relative}
+.tags{display:flex;gap:6px;font-size:.78rem;color:var(--sub);font-weight:700;flex-wrap:wrap}
+.tags span{border:1px solid var(--line);border-radius:6px;padding:0 8px;background:var(--bg)}
+.word{font-family:var(--f-en);font-weight:700;font-size:clamp(40px,12vw,64px);line-height:1.15;margin:18px 0 6px;letter-spacing:.01em;overflow-wrap:anywhere}
+.sent{font-family:var(--f-en);font-weight:500;font-size:clamp(21px,5.6vw,28px);line-height:1.55;margin:14px 0 4px}
+.sent .tg{font-weight:700;border-bottom:3px solid var(--pen)}
+.sent .w{border-radius:4px;padding:0 1px}
+.sent .w.miss{background:var(--pen-soft);text-decoration:underline wavy var(--pen) 2px;text-underline-offset:4px}
+.ipa{font-family:var(--f-ipa);font-size:1.15rem;color:var(--sub);margin:0;letter-spacing:.02em}
+.ipa b{color:var(--ink);font-weight:600}
+.listen{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.listen .btn{min-height:42px;padding:6px 14px}
+
+.recwrap{display:flex;flex-direction:column;align-items:center;gap:10px;margin:22px 0 6px}
+.mic{width:112px;height:112px;border-radius:50%;border:0;background:var(--board);color:var(--board-ink);display:grid;place-items:center;position:relative;box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.mic svg{width:44px;height:44px}
+.mic.rec{background:var(--pen)}
+.mic.rec::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:3px solid var(--pen);opacity:.5;transform:scale(var(--lv,1));transition:transform .08s}
+.mic:disabled{opacity:.5}
+.mic-label{font-weight:700}
+.mic-sub{color:var(--sub);font-size:.85rem;margin-top:-6px;text-align:center}
+@media (prefers-reduced-motion:reduce){.mic.rec::after{transition:none}.prog i{transition:none}}
+
+.verdict{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:16px 0 4px}
+.verdict .mk{font-family:var(--f-en);font-weight:700;font-size:2.4rem;line-height:1;color:var(--pen)}
+.verdict .mk.ok{color:var(--ok)}
+.verdict b{font-size:1.3rem}
+.verdict .sc{font-variant-numeric:tabular-nums;color:var(--sub);font-weight:700}
+.heard{margin:2px 0 0;color:var(--sub)}
+.heard q{font-family:var(--f-en);color:var(--ink);font-size:1.1rem;quotes:"“" "”"}
+.issues{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.issues li{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--pen);border-radius:6px;padding:8px 12px}
+.issues .part{font-family:var(--f-ipa);font-weight:600;margin-right:6px}
+.issues .tip{display:block;color:var(--sub);font-size:.92rem;margin-top:2px}
+.comment{margin:10px 0 0;background:var(--ok-soft);border-radius:8px;padding:8px 12px}
+.panel .btns{margin-top:14px}
+.tfoot{margin-top:18px;display:flex;justify-content:flex-end}
+
+/* 結果・きろく */
+.paperhead{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+.score{font-family:var(--f-en);font-weight:700;color:var(--pen);font-size:4.2rem;line-height:1;border-bottom:7px double var(--pen);padding:0 .1em .04em;transform:rotate(-3deg);transform-origin:left bottom}
+.score small{font-family:var(--f-ui);font-size:1.3rem;margin-left:.1em}
+.facts{margin:0;display:grid;grid-template-columns:auto auto;gap:2px 14px;font-variant-numeric:tabular-nums}
+.facts dt{color:var(--sub)}
+.facts dd{margin:0;font-weight:700}
+.cmp{margin:12px 0 0;font-weight:700}
+.cmp .up{color:var(--ok)}
+.list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.list li{display:grid;grid-template-columns:2em minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line)}
+.list .m{font-family:var(--f-en);font-weight:700;font-size:1.4rem;color:var(--ok);text-align:center;line-height:1}
+.list .m.ng{color:var(--pen)}
+.list .en{font-family:var(--f-en);font-weight:600;font-size:1.15rem;min-width:0;overflow-wrap:anywhere}
+.list .sub{grid-column:2 / 4;color:var(--sub);font-size:.85rem;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.list .sc{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}
+.link{background:none;border:0;padding:0;color:var(--sub);text-decoration:underline;font-size:.85rem}
+.sum{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:8px;background:var(--paper);overflow:hidden}
+.sum div{padding:12px 14px;border-left:1px solid var(--line)}
+.sum div:first-child{border-left:0}
+.sum b{display:block;font-size:1.5rem;line-height:1.3;font-variant-numeric:tabular-nums}
+.sum span{color:var(--sub);font-size:.85rem}
+@media (max-width:520px){.sum{grid-template-columns:repeat(2,1fr)}.sum div:nth-child(3){border-left:0}.sum div:nth-child(n+3){border-top:1px solid var(--line)}}
+.bars{display:grid;gap:6px}
+.bar{display:grid;grid-template-columns:9em minmax(0,1fr) 5.5em;gap:10px;align-items:center;font-size:.92rem}
+.bar .tr{height:12px;background:var(--soft);border-radius:99px;overflow:hidden}
+.bar .tr i{display:block;height:100%;background:var(--board);border-radius:99px}
+.bar span:last-child{font-variant-numeric:tabular-nums;text-align:right;color:var(--sub)}
+@media (max-width:520px){.bar{grid-template-columns:7em minmax(0,1fr) 4.8em}}
+details.hist{border-bottom:1px solid var(--line)}
+details.hist summary::before{content:'＋';color:var(--sub)}
+details.hist[open] summary::before{content:'－'}
+details.hist summary::-webkit-details-marker{display:none}
+details.hist summary{list-style:none;display:flex;gap:12px;flex-wrap:wrap;padding:10px 2px;cursor:pointer;font-variant-numeric:tabular-nums}
+details.hist summary .pt{font-family:var(--f-en);font-weight:700;color:var(--pen);font-size:1.25rem;line-height:1.3;min-width:3.4em}
+details.hist summary .dt{color:var(--sub)}
+.empty{background:var(--paper);border:1px dashed var(--line);border-radius:8px;padding:18px;color:var(--sub)}
+</style>
+</head>
+<body>
+<header class="board">
+  <div class="board-in">
+    <h1>英語 発音テスト</h1>
+    <span class="range">Pronunciation</span>
+    <nav class="nav" id="nav" aria-label="画面の切りかえ">
+      <button type="button" data-go="home" aria-current="page">テスト</button>
+      <button type="button" data-go="records">きろく</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="v-home">
+    <h2>テストの じゅんび</h2>
+    <p class="flash" id="flash" hidden></p>
+    <div class="row"><div class="lab">だれが やる？</div><div>
+      <div class="chips" id="c-player"></div>
+      <div class="addbox" id="addbox" hidden>
+        <input type="text" id="in-name" maxlength="12" placeholder="なまえ（ニックネーム）" aria-label="なまえ">
+        <button type="button" class="btn" id="b-addname">この名前で追加</button>
+      </div>
+    </div></div>
+    <div class="row"><div class="lab">読むもの</div><div class="chips" id="c-mode"></div>
+      <p class="note" id="mode-note"></p></div>
+    <div class="row"><div class="lab">練習したい音</div><div class="chips" id="c-tags"></div>
+      <p class="note">日本語を話す人がまちがえやすい点で分けています。えらんだどれかに当てはまる単語が出ます。</p></div>
+    <div class="row"><div class="lab">問題の数</div><div class="chips" id="c-n"></div></div>
+    <div class="row"><div class="lab">判定</div><div><div class="chips" id="c-judge"></div><div id="gk"></div></div>
+      <p class="note" id="judge-note"></p></div>
+    <details class="more">
+      <summary>くわしい設定</summary>
+      <div class="row"><div class="lab">出し方</div><div class="chips" id="c-how"></div>
+        <p class="note">「おまかせ」は、まだ出ていない単語と まちがえた単語を多めに出します。</p></div>
+      <div class="row"><div class="lab">発音記号</div><div class="chips" id="c-ipa"></div></div>
+      <div class="row"><div class="lab">お手本</div><div class="chips" id="c-pre"></div>
+        <p class="note">お手本はブラウザの英語の声（アメリカ英語）で読み上げます。</p></div>
+    </details>
+    <p class="pool" id="pool"></p>
+    <button type="button" class="btn primary big" id="b-start">テストを はじめる</button>
+    <p class="note" style="margin-top:20px"><a href="./">← 漢字テストのページへ</a></p>
+  </section>
+
+  <section id="v-test" hidden>
+    <div class="tbar"><span id="t-count"></span><div class="prog" aria-hidden="true"><i id="t-prog"></i></div></div>
+    <div class="card">
+      <div class="tags" id="t-tags"></div>
+      <div id="t-text"></div>
+      <p class="ipa" id="t-ipa" hidden></p>
+      <div class="listen" id="t-listen"></div>
+    </div>
+    <div class="recwrap" id="t-rec">
+      <button type="button" class="mic" id="b-mic" aria-label="おして話す">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg>
+      </button>
+      <div class="mic-label" id="mic-label">おして話す</div>
+      <div class="mic-sub" id="mic-sub">話し終わると自動でとまります</div>
+    </div>
+    <div class="panel" id="t-panel" aria-live="polite"></div>
+    <div class="tfoot"><button type="button" class="btn ghost" id="b-quit">テストを やめる</button></div>
+  </section>
+
+  <section id="v-result" hidden></section>
+  <section id="v-records" hidden></section>
+</main>
+
+<script type="text/plain" id="words">
+relationship|rɪˈleɪʃənʃɪp|rl st|Our relationship with nature has changed a lot.
+reliable|rɪˈlaɪəbəl|rl st|She is a reliable friend who always keeps her promises.
+regularly|ˈreɡjələrli|rl|You should exercise regularly to stay healthy.
+library|ˈlaɪbreri|rl|I often study at the city library after school.
+literally|ˈlɪtərəli|rl|The station was literally full of people.
+celebrate|ˈseləbreɪt|rl st|We celebrate my grandmother's birthday every spring.
+collect|kəˈlekt|rl|Volunteers collect trash along the river every month.
+correct|kəˈrekt|rl|Please choose the correct answer from the list.
+election|ɪˈlekʃən|rl|Many young people voted in the last election.
+pollution|pəˈluːʃən|rl|Air pollution is a serious problem in big cities.
+population|ˌpɑːpjəˈleɪʃən|rl st|The population of this town is getting smaller.
+language|ˈlæŋɡwɪdʒ|rl|Learning a new language takes time and patience.
+really|ˈriːəli|rl|I really enjoyed the concert last night.
+rural|ˈrʊrəl|rl|Life in rural areas can be quiet and peaceful.
+world|wɜːrld|rl vw|She wants to travel around the world someday.
+early|ˈɜːrli|rl vw|I got up early to watch the sunrise.
+grass|ɡræs|rl|The children are playing on the grass.
+glass|ɡlæs|rl|Could I have a glass of water, please?
+light|laɪt|rl|Turn off the light when you leave the room.
+right|raɪt|rl|You have the right to express your opinion.
+lead|liːd|rl|Good habits can lead to a happy life.
+read|riːd|rl|I read the news on my phone every morning.
+flight|flaɪt|rl vb|Our flight to London was delayed by two hours.
+fry|fraɪ|rl vb|My father likes to fry eggs for breakfast.
+fly|flaɪ|rl vb|Birds fly south when the weather gets cold.
+believe|bɪˈliːv|rl vb|I believe that hard work pays off.
+clear|klɪr|rl|The sky was clear and full of stars.
+rely|rɪˈlaɪ|rl|Many people rely on smartphones for information.
+rule|ruːl|rl|Every team has to follow the same rule.
+role|roʊl|rl vw|Teachers play an important role in our lives.
+religion|rɪˈlɪdʒən|rl|The museum shows the history of religion in Japan.
+local|ˈloʊkəl|rl vw|We bought fresh vegetables at a local market.
+global|ˈɡloʊbəl|rl vw|Global warming affects every country.
+cultural|ˈkʌltʃərəl|rl|The festival is an important cultural event.
+agriculture|ˈæɡrɪkʌltʃər|rl st|Agriculture is the main industry in this area.
+alarm|əˈlɑːrm|rl|My alarm did not ring this morning.
+already|ɔːlˈredi|rl|I have already finished my homework.
+parallel|ˈpærəlel|rl st|The two roads run parallel to each other.
+laboratory|ˈlæbrətɔːri|rl st|The students did an experiment in the laboratory.
+brilliant|ˈbrɪljənt|rl|That is a brilliant idea!
+problem|ˈprɑːbləm|rl vw|We need to solve this problem together.
+grammar|ˈɡræmər|rl|English grammar is not as hard as it looks.
+practical|ˈpræktɪkəl|rl|She gave me some practical advice.
+surely|ˈʃʊrli|rl|Surely you can finish it by Friday.
+direction|dəˈrekʃən|rl|We walked in the wrong direction.
+arrival|əˈraɪvəl|rl vb|The arrival of the train was announced.
+traffic|ˈtræfɪk|rl vb|There was heavy traffic on the way home.
+crowd|kraʊd|rl|A large crowd gathered in front of the station.
+cloud|klaʊd|rl|A dark cloud covered the sun.
+think|θɪŋk|th|I think we should leave now.
+through|θruː|th rl|The train passes through a long tunnel.
+threat|θret|th rl|Climate change is a threat to many animals.
+thorough|ˈθɜːroʊ|th rl|The doctor gave me a thorough checkup.
+method|ˈmeθəd|th st|This is a simple method for learning new words.
+healthy|ˈhelθi|th rl|Eating breakfast keeps you healthy.
+wealth|welθ|th rl|Health is more important than wealth.
+therefore|ˈðerfɔːr|th rl vb|It was raining; therefore, the game was canceled.
+although|ɔːlˈðoʊ|th rl|Although he was tired, he kept running.
+theory|ˈθiːəri|th rl|Scientists tested the theory many times.
+breathe|briːð|th rl|Breathe slowly and try to relax.
+breath|breθ|th rl|Take a deep breath before you speak.
+clothes|kloʊðz|th rl cc|She packed warm clothes for the trip.
+rhythm|ˈrɪðəm|th rl sl|Clap your hands to the rhythm of the music.
+mouth|maʊθ|th|Don't talk with your mouth full.
+either|ˈiːðər|th|You can choose either the red one or the blue one.
+gather|ˈɡæðər|th|Let's gather some information before we decide.
+southern|ˈsʌðərn|th vw|They live in the southern part of the country.
+sympathy|ˈsɪmpəθi|th st|I feel deep sympathy for the victims.
+enthusiastic|ɪnˌθuːziˈæstɪk|th st|The fans were enthusiastic about the new song.
+author|ˈɔːθər|th|The author signed copies of her new book.
+worth|wɜːrθ|th vw|This museum is worth visiting.
+truth|truːθ|th rl|Please tell me the truth.
+birth|bɜːrθ|th vw|The date of birth is written on the card.
+thousand|ˈθaʊzənd|th|Thousands of people visit this temple every day.
+Thursday|ˈθɜːrzdeɪ|th vw|The meeting was moved to Thursday.
+athlete|ˈæθliːt|th rl st|The athlete trained hard for the Olympics.
+mathematics|ˌmæθəˈmætɪks|th st|Mathematics is my favorite subject.
+bath|bæθ|th|I usually take a bath before going to bed.
+smooth|smuːð|th|The surface of the table is very smooth.
+weather|ˈweðər|th|The weather will be sunny tomorrow.
+whether|ˈweðər|th|I don't know whether he will come or not.
+three|θriː|th rl|We stayed there for three nights.
+throw|θroʊ|th rl|Please don't throw garbage into the river.
+thick|θɪk|th|This book is too thick to read in a day.
+thin|θɪn|th|The ice on the lake is too thin to walk on.
+north|nɔːrθ|th rl|The wind is blowing from the north.
+nothing|ˈnʌθɪŋ|th vw|There is nothing to worry about.
+together|təˈɡeðər|th st|Let's work together to finish the project.
+value|ˈvæljuː|vb rl|We should value the time we spend with family.
+various|ˈveriəs|vb rl|The shop sells various kinds of tea.
+vehicle|ˈviːəkəl|vb rl sl|Electric vehicles are becoming popular.
+volunteer|ˌvɑːlənˈtɪr|vb rl st|She works as a volunteer at the hospital.
+vote|voʊt|vb vw|You can vote when you turn eighteen.
+available|əˈveɪləbəl|vb rl st|Tickets are available online.
+development|dɪˈveləpmənt|vb rl st|The development of the town took ten years.
+evidence|ˈevɪdəns|vb st|There is no evidence that he was there.
+survive|sərˈvaɪv|vb rl|Plants cannot survive without water.
+achieve|əˈtʃiːv|vb|You can achieve your goal if you keep trying.
+deliver|dɪˈlɪvər|vb rl|The package will be delivered tomorrow.
+effective|ɪˈfektɪv|vb st|Exercise is an effective way to reduce stress.
+efficient|ɪˈfɪʃənt|vb st|This new machine is more efficient than the old one.
+figure|ˈfɪɡjər|vb|I can't figure out how to solve this puzzle.
+fund|fʌnd|vb|The school started a fund to help the library.
+philosophy|fəˈlɑːsəfi|vb rl st|He studied philosophy at university.
+physical|ˈfɪzɪkəl|vb rl|Physical activity is good for your brain.
+festival|ˈfestɪvəl|vb rl|The summer festival attracts many tourists.
+fundamental|ˌfʌndəˈmentəl|vb rl st|Reading is a fundamental skill.
+offer|ˈɔːfər|vb|They offered me a job at the hotel.
+very|ˈveri|vb rl|Thank you very much for your help.
+voice|vɔɪs|vb|She has a beautiful singing voice.
+visit|ˈvɪzɪt|vb|We plan to visit Kyoto next month.
+video|ˈvɪdioʊ|vb vw|He uploaded a video of his trip.
+vocabulary|voʊˈkæbjəleri|vb rl st|Reading helps you build your vocabulary.
+violence|ˈvaɪələns|vb rl|Violence is never the answer.
+victory|ˈvɪktəri|vb rl|The team celebrated their first victory.
+favorite|ˈfeɪvərɪt|vb rl|What is your favorite season?
+travel|ˈtrævəl|vb rl|I want to travel abroad after graduation.
+native|ˈneɪtɪv|vb vw|Her native language is Spanish.
+positive|ˈpɑːzətɪv|vb st|Try to keep a positive attitude.
+fact|fækt|vb|In fact, I had never been there before.
+food|fuːd|vb|Japanese food is popular all over the world.
+fair|fer|vb rl|It is not fair to blame him alone.
+forest|ˈfɔːrɪst|vb rl|We walked through the forest for hours.
+future|ˈfjuːtʃər|vb|What do you want to be in the future?
+half|hæf|vb sl|Half of the students walk to school.
+event|ɪˈvent|st|The event will be held in the gym.
+career|kəˈrɪr|st rl|She started her career as a nurse.
+percent|pərˈsent|st|About thirty percent of the students agreed.
+technique|tekˈniːk|st|He learned a new painting technique.
+engineer|ˌendʒɪˈnɪr|st|My brother works as an engineer.
+Japanese|ˌdʒæpəˈniːz|st|Many people are interested in Japanese culture.
+guitar|ɡɪˈtɑːr|st|He plays the guitar in a band.
+hotel|hoʊˈtel|st vw|We stayed at a hotel near the beach.
+routine|ruːˈtiːn|st rl|Jogging is part of my morning routine.
+comfortable|ˈkʌmftərbəl|st rl vb|These shoes are very comfortable.
+interesting|ˈɪntrəstɪŋ|st rl|That was an interesting story.
+chocolate|ˈtʃɔːklət|st rl|She gave me a box of chocolate.
+vegetable|ˈvedʒtəbəl|st vb rl|Eat more vegetables and less sugar.
+average|ˈævərɪdʒ|st vb rl|The average temperature in July is 28 degrees.
+determine|dɪˈtɜːrmɪn|st|Your effort will determine the result.
+develop|dɪˈveləp|st vb rl|Children develop language skills quickly.
+photographer|fəˈtɑːɡrəfər|st vb rl|The photographer took pictures of the wedding.
+photograph|ˈfoʊtəɡræf|st vb rl|This old photograph shows my grandfather.
+economy|ɪˈkɑːnəmi|st|The economy is slowly getting better.
+economic|ˌekəˈnɑːmɪk|st|The country faces serious economic problems.
+democracy|dɪˈmɑːkrəsi|st rl|Democracy needs active citizens.
+ability|əˈbɪləti|st rl|She has the ability to stay calm under pressure.
+opportunity|ˌɑːpərˈtuːnəti|st rl|This is a great opportunity to learn.
+influence|ˈɪnfluəns|st vb rl|Parents have a strong influence on their children.
+advantage|ədˈvæntɪdʒ|st vb|Living near the station is a big advantage.
+analysis|əˈnæləsɪs|st rl|The analysis took several weeks.
+category|ˈkætəɡɔːri|st rl|Put the books into the right category.
+original|əˈrɪdʒənəl|st rl|The movie is better than the original novel.
+success|səkˈses|st|Hard work is the key to success.
+imagine|ɪˈmædʒɪn|st|Imagine a world without music.
+image|ˈɪmɪdʒ|st vw|The company wants to improve its image.
+damage|ˈdæmɪdʒ|st|The storm caused serious damage to the houses.
+manager|ˈmænɪdʒər|st|The manager explained the new rules.
+adventure|ədˈventʃər|st vb|The book is about a boy's adventure at sea.
+museum|mjuˈziːəm|st|The museum is closed on Mondays.
+banana|bəˈnænə|st|I eat a banana every morning.
+tomato|təˈmeɪtoʊ|st vw|Add some tomato to the salad.
+potato|pəˈteɪtoʊ|st vw|Cut the potato into small pieces.
+idea|aɪˈdiːə|st|That sounds like a good idea.
+decade|ˈdekeɪd|st|The city has changed a lot over the past decade.
+calendar|ˈkæləndər|st rl|I marked the date on my calendar.
+hesitate|ˈhezɪteɪt|st|Don't hesitate to ask questions.
+sophisticated|səˈfɪstɪkeɪtɪd|st vb|This robot uses sophisticated technology.
+environment|ɪnˈvaɪrənmənt|st vb rl|We must protect the environment.
+temperature|ˈtemprətʃər|st rl|The temperature dropped below zero last night.
+information|ˌɪnfərˈmeɪʃən|st vb rl|You can find more information on our website.
+communication|kəˌmjuːnɪˈkeɪʃən|st|Good communication is important in a team.
+experience|ɪkˈspɪriəns|st rl|Studying abroad was a wonderful experience.
+necessary|ˈnesəseri|st rl|It is necessary to bring your own lunch.
+especially|ɪˈspeʃəli|st rl|I like fruit, especially apples.
+industry|ˈɪndəstri|st rl|The tourism industry is growing fast.
+government|ˈɡʌvərnmənt|st vb rl|The government announced a new policy.
+personality|ˌpɜːrsəˈnæləti|st rl|She has a cheerful personality.
+politics|ˈpɑːlətɪks|st rl|He is interested in politics.
+political|pəˈlɪtɪkəl|st rl|There are many political parties in Japan.
+record|ˈrekərd|st rl|She broke the school record in the 100 meters.
+increase|ɪnˈkriːs|st rl|The number of tourists will increase next year.
+percentage|pərˈsentɪdʒ|st|A large percentage of students use smartphones.
+advice|ədˈvaɪs|st vb|Let me give you some advice.
+abroad|əˈbrɔːd|st rl|My sister is studying abroad in Canada.
+ahead|əˈhed|st|Go straight ahead and turn left.
+balance|ˈbæləns|st rl|It is hard to keep a good balance between work and rest.
+model|ˈmɑːdəl|vw rl|This is the newest model of the camera.
+label|ˈleɪbəl|vw rl|Read the label before you buy food.
+theme|θiːm|vw th|The theme of the speech was friendship.
+virus|ˈvaɪrəs|vw vb rl|The virus spread quickly around the world.
+allergy|ˈælərdʒi|vw rl st|I have an allergy to cats.
+energy|ˈenərdʒi|vw st|Solar energy is clean and renewable.
+vitamin|ˈvaɪtəmɪn|vw vb st|Oranges are rich in vitamin C.
+radio|ˈreɪdioʊ|vw rl|I listen to the radio while I cook.
+stadium|ˈsteɪdiəm|vw|The new stadium can hold fifty thousand people.
+studio|ˈstuːdioʊ|vw|The band recorded the album in a small studio.
+sweater|ˈswetər|vw|She knitted a sweater for her son.
+towel|ˈtaʊəl|vw rl|Can you pass me a towel?
+oven|ˈʌvən|vw vb|Bake the cake in the oven for thirty minutes.
+coffee|ˈkɔːfi|vw vb|I drink a cup of coffee every morning.
+sauce|sɔːs|vw|This sauce goes well with fish.
+Christmas|ˈkrɪsməs|vw sl rl|We decorate a tree at Christmas.
+iron|ˈaɪərn|vw rl|Iron is used to make many tools.
+Europe|ˈjʊrəp|vw rl|They traveled around Europe for a month.
+Asia|ˈeɪʒə|vw|Japan is a country in East Asia.
+Italy|ˈɪtəli|vw rl st|Italy is famous for its food and art.
+data|ˈdeɪtə|vw|We collected data from five hundred students.
+work|wɜːrk|vw rl|My mother works at a bank.
+walk|wɔːk|vw rl sl|I walk my dog every evening.
+coat|koʊt|vw|Put on your coat; it's cold outside.
+court|kɔːrt|vw rl|The tennis court is next to the gym.
+heart|hɑːrt|vw rl|She has a kind heart.
+hurt|hɜːrt|vw rl|My leg hurt after the long walk.
+bird|bɜːrd|vw rl|A small bird was singing in the tree.
+bus|bʌs|vw vb|I take the bus to school.
+lunch|lʌntʃ|vw rl|Let's have lunch together.
+color|ˈkʌlər|vw rl|What color do you like best?
+money|ˈmʌni|vw|I am saving money to buy a bike.
+come|kʌm|vw|Can you come to my party on Sunday?
+want|wɑːnt|vw|I want to become a doctor.
+won't|woʊnt|vw|I won't be late again.
+warm|wɔːrm|vw rl|It's warm today, so let's go outside.
+cup|kʌp|vw|Would you like a cup of tea?
+cap|kæp|vw|He always wears a baseball cap.
+knowledge|ˈnɑːlɪdʒ|sl rl|Knowledge is power.
+honest|ˈɑːnɪst|sl|Thank you for your honest opinion.
+hour|ˈaʊər|sl rl|The movie lasted about two hours.
+island|ˈaɪlənd|sl rl|They live on a small island.
+castle|ˈkæsəl|sl rl|The castle was built four hundred years ago.
+listen|ˈlɪsən|sl rl|Listen carefully to the instructions.
+often|ˈɔːfən|sl vb|I often go fishing with my uncle.
+Wednesday|ˈwenzdeɪ|sl|The test is next Wednesday.
+receipt|rɪˈsiːt|sl rl|Please keep the receipt.
+doubt|daʊt|sl|There is no doubt that she is right.
+debt|det|sl|He worked hard to pay off his debt.
+subtle|ˈsʌtəl|sl rl|There is a subtle difference between the two colors.
+foreign|ˈfɔːrən|sl rl vb|Speaking a foreign language opens many doors.
+sign|saɪn|sl|Please sign your name here.
+design|dɪˈzaɪn|sl st|I like the design of this chair.
+climb|klaɪm|sl rl|We climbed Mount Fuji last summer.
+thumb|θʌm|sl th|He gave me a thumbs-up.
+muscle|ˈmʌsəl|sl rl|Swimming uses almost every muscle in your body.
+psychology|saɪˈkɑːlədʒi|sl rl st|She wants to study psychology at college.
+whistle|ˈwɪsəl|sl rl|The referee blew the whistle.
+answer|ˈænsər|sl|Do you know the answer to this question?
+calm|kɑːm|sl rl|Please stay calm and listen.
+salmon|ˈsæmən|sl rl|Grilled salmon is my favorite dish.
+could|kʊd|sl rl|Could you help me with this box?
+would|wʊd|sl rl|I would like to visit Hawaii someday.
+should|ʃʊd|sl rl|You should see a doctor.
+honor|ˈɑːnər|sl rl|It is an honor to meet you.
+wrist|rɪst|sl rl cc|I hurt my wrist playing basketball.
+written|ˈrɪtən|sl rl|The letter was written in English.
+strengths|streŋkθs|cc th rl|Everyone has different strengths and weaknesses.
+months|mʌnθs|cc th|I have been learning the piano for six months.
+sixth|sɪksθ|cc th|My sister is in the sixth grade.
+twelfth|twelfθ|cc th rl vb|Today is the twelfth of May.
+asked|æskt|cc|She asked me to wait outside.
+watched|wɑːtʃt|cc|We watched a movie last night.
+texts|teksts|cc|He sends me texts every day.
+desks|desks|cc|The desks were arranged in a circle.
+street|striːt|cc rl|Be careful when you cross the street.
+spring|sprɪŋ|cc rl|Cherry blossoms bloom in spring.
+script|skrɪpt|cc rl|The actors practiced reading the script.
+splash|splæʃ|cc rl|The children splashed water at each other.
+next|nekst|cc|See you next week.
+world's|wɜːrldz|cc rl vw|Mount Everest is the world's highest mountain.
+helped|helpt|cc rl|My friends helped me move to a new apartment.
+changed|tʃeɪndʒd|cc|Everything changed after that day.
+instruction|ɪnˈstrʌkʃən|cc rl st|Follow the instructions on the screen.
+extremely|ɪkˈstriːmli|cc rl st|The test was extremely difficult.
+</script>
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s);};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+function btn(txt,cls,fn){var b=el('button','btn'+(cls?' '+cls:''),txt);b.type='button';b.addEventListener('click',fn);return b;}
+function pct(ok,n){return n?Math.round(ok/n*100):0;}
+var TAGS={rl:'RとL',th:'TH',vb:'VとB・FとH',st:'アクセントの位置',vw:'母音・カタカナ英語',sl:'読まない文字',cc:'子音のつながり'};
+var TAG_ORDER=['rl','th','vb','st','vw','sl','cc'];
+var MODE={word:'単語',sent:'英文'};
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition||null;
+
+/* ================= 単語 ================= */
+var WORDS=[],BYID={};
+$('#words').textContent.trim().split(/\n+/).forEach(function(line){
+  var p=line.trim().split('|');if(p.length!==4)return;
+  var w={id:p[0].toLowerCase(),w:p[0],ipa:p[1],tags:p[2].split(/\s+/),s:p[3]};
+  WORDS.push(w);BYID[w.id]=w;
+});
+function norm(s){return String(s||'').toLowerCase().replace(/[’‘]/g,"'").replace(/[^a-z0-9' ]+/g,' ').replace(/\s+/g,' ').trim();}
+function toks(s){return norm(s).split(' ').filter(Boolean);}
+/* 例文の中の単語（活用形を含む）を見つける */
+function findTarget(w){
+  var re=new RegExp("\\b"+w.w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+"(s|es|ed|d|-up)?\\b","i");
+  var m=re.exec(w.s);return m?{i:m.index,len:m[0].length}:null;
+}
+
+/* ================= 設定 ================= */
+var S={mode:'word',tags:TAG_ORDER.slice(),n:10,how:'auto',judge:'auto',ipa:'after',pre:false,player:null};
+try{var sv=JSON.parse(localStorage.getItem('eigo.settings')||'null');if(sv&&typeof sv==='object')Object.keys(S).forEach(function(k){if(sv[k]!=null)S[k]=sv[k];});}catch(e){}
+function saveSettings(){try{localStorage.setItem('eigo.settings',JSON.stringify(S));}catch(e){}}
+/* Gemini のキーは漢字テストと共通（同じサイトなので一度入れれば両方で使える） */
+var G={key:'',model:'gemini-3.8-flash'};
+try{var gs=JSON.parse(localStorage.getItem('kanjiKaki.gemini')||'null');if(gs&&typeof gs==='object'){if(gs.key)G.key=String(gs.key);if(gs.model)G.model=String(gs.model);}}catch(e){}
+function saveG(){try{localStorage.setItem('kanjiKaki.gemini',JSON.stringify(G));}catch(e){}}
+var MODELS=[{v:'gemini-3.8-flash',label:'3.8 Flash（おすすめ）'},{v:'gemini-3.6-flash',label:'3.6 Flash'},{v:'gemini-3.5-flash-lite',label:'3.5 Flash-Lite（安い）'}];
+function judgeKind(){
+  if(S.judge==='gemini')return G.key?'g':null;
+  if(S.judge==='browser')return SR?'b':null;
+  return G.key?'g':(SR?'b':null);
+}
+
+/* ================= きろく（この端末のブラウザに保存） ================= */
+var Store={players:[]};
+function newPlayer(name,auto){return {id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:name,created:Date.now(),auto:!!auto,s:[]};}
+function load(){
+  try{var o=JSON.parse(localStorage.getItem('eigo.records')||'null');if(o&&Array.isArray(o.players))Store.players=o.players.filter(function(p){return p&&p.id;}).map(function(p){p.s=Array.isArray(p.s)?p.s:[];return p;});}catch(e){}
+  if(!Store.players.length)Store.players=[newPlayer('じぶん',true)];
+}
+function persist(){
+  Store.players.forEach(function(p){p._st=null;});
+  try{
+    var o={players:Store.players.filter(function(p){return !p.auto||p.s.length;}).map(function(p){return {id:p.id,name:p.name,created:p.created,s:p.s.slice(-300)};})};
+    localStorage.setItem('eigo.records',JSON.stringify(o));
+  }catch(e){}
+}
+function P(){var p=null;Store.players.forEach(function(x){if(x.id===S.player)p=x;});if(!p){p=Store.players[0];S.player=p.id;}return p;}
+function stats(p){
+  if(p._st)return p._st;
+  var q={};
+  p.s.forEach(function(s){s.it.forEach(function(it){
+    var a=q[it[0]]||(q[it[0]]=[0,0,0,0,0]);
+    a[0]++;if(it[1])a[1]++;if(typeof it[2]==='number'){a[2]+=it[2];a[3]++;}a[4]=it[1];
+  });});
+  p._st={q:q};return p._st;
+}
+function isWeak(a){return a&&a[0]>0&&(!a[4]||a[1]/a[0]<0.8);}
+
+/* ================= 画面 ================= */
+var view='home';
+function show(v){
+  view=v;['home','test','result','records'].forEach(function(k){$('#v-'+k).hidden=(k!==v);});
+  $('#nav').hidden=(v==='test');
+  $$('#nav button').forEach(function(b){var on=(b.dataset.go==='records')===(v==='records');if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
+  window.scrollTo(0,0);
+}
+$$('#nav button').forEach(function(b){b.addEventListener('click',function(){if(b.dataset.go==='records'){renderRecords();show('records');}else{renderHome();show('home');}});});
+
+function chipGroup(host,items,get,set,multi){
+  host.textContent='';
+  items.forEach(function(it){
+    var b=el('button','chip',it.label);b.type='button';b.disabled=!!it.disabled;
+    var on=multi?get().indexOf(it.v)>=0:get()===it.v;b.setAttribute('aria-pressed',on?'true':'false');
+    b.addEventListener('click',function(){
+      if(multi){var a=get().slice(),i=a.indexOf(it.v);if(i>=0){if(a.length>1)a.splice(i,1);}else a.push(it.v);set(a);}else set(it.v);
+      saveSettings();renderHome();
+    });
+    host.appendChild(b);
+  });
+}
+var keySeq=0;
+function keyBox(onSaved){
+  var box=el('div','gkey'),kid='in-gkey-'+(++keySeq);
+  var lab=el('label',null,'GeminiのAPIキー');lab.setAttribute('for',kid);box.appendChild(lab);
+  var row=el('div','addbox');
+  var inp=el('input');inp.type='password';inp.id=kid;inp.className='gkey-in';inp.autocomplete='off';inp.setAttribute('autocapitalize','off');inp.spellcheck=false;
+  inp.placeholder=G.key?'保存ずみ（変えるときだけ入力）':'AIza… で始まるキーを貼り付け';
+  row.appendChild(inp);
+  row.appendChild(btn('保存','primary',function(){var v=inp.value.trim();if(!v)return;G.key=v;saveG();inp.value='';if(onSaved)onSaved();}));
+  box.appendChild(row);
+  var ms=el('div','chips');ms.style.marginTop='8px';
+  MODELS.forEach(function(m){var c=el('button','chip',m.label);c.type='button';c.setAttribute('aria-pressed',G.model===m.v?'true':'false');c.addEventListener('click',function(){G.model=m.v;saveG();if(onSaved)onSaved();});ms.appendChild(c);});
+  box.appendChild(ms);
+  var n=el('p','note');n.appendChild(document.createTextNode('キーは '));
+  var a=el('a',null,'Google AI Studio');a.href='https://aistudio.google.com/apikey';a.target='_blank';a.rel='noopener';n.appendChild(a);
+  n.appendChild(document.createTextNode(' で作れます。漢字テストで入れたキーと共通です。キーはこの端末のブラウザの中だけに保存され、録音した声といっしょにGoogleへ送られます。無料枠では、送った声がGoogleのサービス改善に使われることがあります。'));
+  box.appendChild(n);
+  if(G.key){var st=el('p','note');st.appendChild(el('b',null,'キーは保存ずみです（…'+G.key.slice(-4)+'）。'));
+    var del=el('button','link','このキーを消す');del.type='button';del.addEventListener('click',function(){G.key='';saveG();if(onSaved)onSaved();});st.appendChild(document.createTextNode(' '));st.appendChild(del);box.appendChild(st);}
+  return box;
+}
+function renderPlayers(){
+  var host=$('#c-player');host.textContent='';var cur=P();
+  Store.players.forEach(function(p){var b=el('button','chip',p.name);b.type='button';b.setAttribute('aria-pressed',p===cur?'true':'false');b.addEventListener('click',function(){S.player=p.id;saveSettings();renderHome();});host.appendChild(b);});
+  var add=el('button','chip add','＋ 人を追加');add.type='button';add.addEventListener('click',function(){$('#addbox').hidden=false;$('#in-name').focus();});host.appendChild(add);
+}
+function addName(){
+  var name=$('#in-name').value.trim();if(!name)return;
+  var only=Store.players.length===1&&Store.players[0].auto&&!Store.players[0].s.length?Store.players[0]:null,p;
+  if(only){only.name=name;only.auto=false;p=only;}else{p=newPlayer(name,false);Store.players.push(p);}
+  S.player=p.id;saveSettings();persist();$('#in-name').value='';$('#addbox').hidden=true;renderHome();
+}
+$('#b-addname').addEventListener('click',addName);
+$('#in-name').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.isComposing)addName();});
+function pool(){return WORDS.filter(function(w){return w.tags.some(function(t){return S.tags.indexOf(t)>=0;});});}
+function renderHome(){
+  renderPlayers();
+  chipGroup($('#c-mode'),[{v:'word',label:'単語'},{v:'sent',label:'英文'}],function(){return S.mode;},function(v){S.mode=v;});
+  $('#mode-note').textContent=S.mode==='word'?'単語を1つずつ発音します。':'その単語を使った英文を、1文まるごと読みます。';
+  chipGroup($('#c-tags'),TAG_ORDER.map(function(t){return {v:t,label:TAGS[t]};}),function(){return S.tags;},function(v){S.tags=v;},true);
+  chipGroup($('#c-n'),[5,10,20,30].map(function(n){return {v:n,label:n+'問'};}),function(){return S.n;},function(v){S.n=v;});
+  chipGroup($('#c-judge'),[{v:'auto',label:'おまかせ'},{v:'gemini',label:'Gemini（くわしく訂正）'},{v:'browser',label:'ブラウザの音声認識（かんたん）',disabled:!SR}],function(){return S.judge;},function(v){S.judge=v;});
+  chipGroup($('#c-how'),[{v:'auto',label:'おまかせ'},{v:'random',label:'ランダム'},{v:'weak',label:'にがてだけ'}],function(){return S.how;},function(v){S.how=v;});
+  chipGroup($('#c-ipa'),[{v:'after',label:'答えたあとに出す'},{v:'before',label:'はじめから出す'},{v:'never',label:'出さない'}],function(){return S.ipa;},function(v){S.ipa=v;});
+  chipGroup($('#c-pre'),[{v:false,label:'答えたあとに聞ける'},{v:true,label:'先に聞ける'}],function(){return S.pre;},function(v){S.pre=v;});
+  var j=judgeKind(),gk=$('#gk');gk.textContent='';
+  if(S.judge!=='browser'&&(!G.key||S.judge==='gemini')){var kb=keyBox(renderHome);kb.style.marginTop='10px';gk.appendChild(kb);}
+  $('#judge-note').textContent=
+    j==='g'?'録音した声をGeminiが聞いて、○×と、どの音をどう直すかを日本語で教えます（1問 数秒かかります）。':
+    j==='b'?'ブラウザの音声認識で、その英語として聞き取れたかだけを判定します。くわしい訂正は出ません。GeminiのAPIキーを入れると、くわしく訂正できます。':
+    'このブラウザでは音声認識が使えません。GeminiのAPIキーを入れてください。';
+  var pl=pool(),n=pl.length,p=P();
+  if(S.how==='weak'){var st=stats(p);n=pl.filter(function(w){return isWeak(st.q[w.id]);}).length;}
+  $('#pool').textContent=(S.how==='weak'?'にがてな単語：':'えらんだ はんいの単語：')+n+'語';
+  $('#b-start').disabled=!n||!j;
+}
+function pick(){
+  var p=P(),pl=pool(),st=stats(p);
+  if(S.how==='weak')pl=pl.filter(function(w){return isWeak(st.q[w.id]);});
+  function wt(w){if(S.how!=='auto')return 1;var a=st.q[w.id];if(!a||!a[0])return 3;if(!a[4])return 5;if(a[1]/a[0]<0.8)return 3;return 1;}
+  return pl.map(function(w){return {w:w,k:Math.pow(Math.random(),1/wt(w))};}).sort(function(a,b){return b.k-a.k;}).slice(0,S.n).map(function(x){return x.w;});
+}
+$('#b-start').addEventListener('click',function(){var ws=pick();if(ws.length)startTest(ws,S.mode,S.how==='weak'?'weak':'');});
+
+/* ================= お手本の声 ================= */
+var voice=null;
+function pickVoice(){
+  try{
+    var vs=window.speechSynthesis.getVoices().filter(function(v){return /^en[-_]US/i.test(v.lang);});
+    var pref=['Samantha','Google US English','Microsoft Aria','Microsoft Jenny','Alex','Aaron','Nicky','Allison','Ava'];
+    voice=null;
+    pref.some(function(n){return vs.some(function(v){if(v.name.indexOf(n)>=0){voice=v;return true;}return false;});});
+    if(!voice)voice=vs[0]||null;
+  }catch(e){}
+}
+if('speechSynthesis' in window){pickVoice();try{window.speechSynthesis.onvoiceschanged=pickVoice;}catch(e){}}
+function speak(text,slow){
+  try{
+    var u=new SpeechSynthesisUtterance(text);u.lang='en-US';if(voice)u.voice=voice;u.rate=slow?0.6:0.92;
+    window.speechSynthesis.cancel();window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ================= 録音（マイクはテスト中ずっと開いておく） ================= */
+var Rec={ctx:null,stream:null,src:null,proc:null,sink:null,on:false,chunks:[],rate:48000,floor:0.004,heard:false,t0:0,lastLoud:0,cb:null,max:6000,tail:1100,level:0};
+function micOpen(){
+  if(Rec.stream)return Promise.resolve(true);
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return Promise.resolve(null);
+  return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(function(s){
+    Rec.stream=s;
+    var AC=window.AudioContext||window.webkitAudioContext;
+    Rec.ctx=Rec.ctx||new AC();Rec.rate=Rec.ctx.sampleRate;
+    Rec.src=Rec.ctx.createMediaStreamSource(s);
+    Rec.proc=Rec.ctx.createScriptProcessor(4096,1,1);
+    Rec.sink=Rec.ctx.createGain();Rec.sink.gain.value=0;
+    Rec.src.connect(Rec.proc);Rec.proc.connect(Rec.sink);Rec.sink.connect(Rec.ctx.destination);
+    Rec.proc.onaudioprocess=onAudio;
+    return true;
+  },function(e){return (e&&(e.name==='NotAllowedError'||e.name==='SecurityError'))?false:null;});
+}
+function micClose(){
+  Rec.on=false;
+  try{if(Rec.proc){Rec.proc.onaudioprocess=null;Rec.proc.disconnect();}if(Rec.src)Rec.src.disconnect();if(Rec.sink)Rec.sink.disconnect();}catch(e){}
+  if(Rec.stream)Rec.stream.getTracks().forEach(function(t){t.stop();});
+  Rec.stream=Rec.src=Rec.proc=Rec.sink=null;
+}
+function onAudio(ev){
+  var d=ev.inputBuffer.getChannelData(0),sum=0;
+  for(var i=0;i<d.length;i++)sum+=d[i]*d[i];
+  var rms=Math.sqrt(sum/d.length);
+  if(!Rec.on){Rec.floor=Rec.floor*0.95+Math.min(rms,0.05)*0.05;return;}
+  Rec.chunks.push(new Float32Array(d));
+  var now=performance.now(),th=Math.max(0.015,Rec.floor*3.2);
+  Rec.level=Math.min(1,rms/0.12);
+  var m=$('#b-mic');if(m)m.style.setProperty('--lv',(1+Rec.level*0.35).toFixed(2));
+  if(rms>th){if(!Rec.heard)Rec.heard=true;Rec.lastLoud=now;}
+  var el2=now-Rec.t0;
+  if(Rec.heard&&now-Rec.lastLoud>Rec.tail&&el2>500)return recStop('auto');
+  if(!Rec.heard&&el2>6000)return recStop('silent');
+  if(el2>Rec.max)return recStop('max');
+}
+function recStart(maxMs,tailMs,cb){
+  if(Rec.ctx&&Rec.ctx.state==='suspended')Rec.ctx.resume();
+  Rec.chunks=[];Rec.heard=false;Rec.t0=performance.now();Rec.lastLoud=Rec.t0;Rec.max=maxMs;Rec.tail=tailMs;Rec.cb=cb;Rec.on=true;
+}
+function recStop(why){
+  if(!Rec.on)return;
+  Rec.on=false;var cb=Rec.cb;Rec.cb=null;
+  var m=$('#b-mic');if(m)m.style.removeProperty('--lv');
+  if(cb)cb(why,Rec.heard);
+}
+/* 録音を 16kHz・モノラルの WAV にする（前後の無音は少し残して切る） */
+function takeWav(){
+  var n=0;Rec.chunks.forEach(function(c){n+=c.length;});
+  var all=new Float32Array(n),o=0;Rec.chunks.forEach(function(c){all.set(c,o);o+=c.length;});
+  var th=Math.max(0.012,Rec.floor*3),win=Math.round(Rec.rate*0.02),st=0,en=all.length;
+  function rmsAt(i){var s=0,k=0;for(var j=i;j<Math.min(all.length,i+win);j++){s+=all[j]*all[j];k++;}return k?Math.sqrt(s/k):0;}
+  for(var i=0;i<all.length;i+=win){if(rmsAt(i)>th){st=i;break;}}
+  for(var i2=all.length-win;i2>0;i2-=win){if(rmsAt(i2)>th){en=i2+win;break;}}
+  var pad=Math.round(Rec.rate*0.25);st=Math.max(0,st-pad);en=Math.min(all.length,en+pad);
+  if(en<=st){st=0;en=all.length;}
+  var src=all.subarray(st,en),ratio=Rec.rate/16000,len=Math.max(1,Math.floor(src.length/ratio)),pcm=new Int16Array(len);
+  for(var k=0;k<len;k++){
+    var a=Math.floor(k*ratio),b=Math.min(src.length,Math.floor((k+1)*ratio)),s=0,c=0;
+    for(var j=a;j<b;j++){s+=src[j];c++;}
+    var v=c?s/c:src[a]||0;v=Math.max(-1,Math.min(1,v));pcm[k]=v<0?v*0x8000:v*0x7fff;
+  }
+  var buf=new ArrayBuffer(44+pcm.length*2),dv=new DataView(buf);
+  function ws(off,str){for(var q=0;q<str.length;q++)dv.setUint8(off+q,str.charCodeAt(q));}
+  ws(0,'RIFF');dv.setUint32(4,36+pcm.length*2,true);ws(8,'WAVE');ws(12,'fmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
+  dv.setUint32(24,16000,true);dv.setUint32(28,32000,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);ws(36,'data');dv.setUint32(40,pcm.length*2,true);
+  new Int16Array(buf,44).set(pcm);
+  return {blob:new Blob([buf],{type:'audio/wav'}),buf:buf,sec:len/16000};
+}
+function b64(buf){var bytes=new Uint8Array(buf),s='',CH=0x8000;for(var i=0;i<bytes.length;i+=CH)s+=String.fromCharCode.apply(null,bytes.subarray(i,i+CH));return btoa(s);}
+
+/* ================= Gemini ================= */
+function stripFence(t){return String(t||'').replace(/^\s*```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'').trim();}
+function geminiError(status,body){
+  var msg=(body&&body.error&&body.error.message)||'',reason='';
+  try{(body.error.details||[]).forEach(function(d){if(d.reason)reason=d.reason;});}catch(e){}
+  if(reason==='API_KEY_INVALID'||/API key not valid/i.test(msg))return 'APIキーが正しくありません。「判定」のところでキーを確かめてください。';
+  if(status===403&&/referer|referrer/i.test(msg))return 'このキーは、このページから使えない設定になっています。キーの「ウェブサイトの制限」に ytanoue-arch.github.io を入れてください。';
+  if(status===403)return 'このキーではGeminiを使えませんでした（'+msg.slice(0,80)+'）。';
+  if(status===404)return 'えらんだモデル（'+G.model+'）が使えませんでした。設定で別のモデルをえらんでください。';
+  if(status===429)return '回数の上限に達しました。少し時間をおいてから、もう一度ためしてください。';
+  if(status>=500)return 'Geminiのサーバーが混みあっています。もう一度ためしてください。';
+  return '判定できませんでした（'+status+' '+msg.slice(0,80)+'）。';
+}
+function callGemini(text,wavB64,schema){
+  function body(withSchema){
+    var gc={response_mime_type:'application/json'};if(withSchema)gc.response_schema=schema;
+    return JSON.stringify({contents:[{role:'user',parts:[{text:text},{inline_data:{mime_type:'audio/wav',data:wavB64}}]}],generationConfig:gc});
+  }
+  function go(withSchema){
+    return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(G.model)+':generateContent',{
+      method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':G.key},body:body(withSchema)
+    }).then(function(r){
+      return r.json().catch(function(){return {};}).then(function(j){
+        if(!r.ok){var m=(j&&j.error&&j.error.message)||'';if(withSchema&&r.status===400&&/schema|Invalid JSON payload/i.test(m))return go(false);throw new Error(geminiError(r.status,j));}
+        var cand=j.candidates&&j.candidates[0];
+        if(!cand)throw new Error('Geminiから答えが返ってきませんでした。もう一度ためしてください。');
+        var t=((cand.content&&cand.content.parts)||[]).filter(function(p){return p.text&&!p.thought;}).map(function(p){return p.text;}).join('');
+        try{return JSON.parse(stripFence(t));}catch(e){throw new Error('判定結果を読めませんでした。もう一度ためしてください。');}
+      });
+    },function(e){if(e&&e.message&&/[ぁ-ん]/.test(e.message))throw e;throw new Error('Geminiにつながりませんでした。インターネットの接続を確かめてください。');});
+  }
+  return go(true);
+}
+var ISSUE={type:'OBJECT',properties:{part:{type:'STRING'},problem:{type:'STRING'},tip:{type:'STRING'}},required:['part','problem']};
+var SCHEMA_WORD={type:'OBJECT',properties:{heard:{type:'STRING'},ok:{type:'BOOLEAN'},score:{type:'INTEGER'},stress_ok:{type:'BOOLEAN'},issues:{type:'ARRAY',items:ISSUE},comment:{type:'STRING'}},required:['heard','ok','score']};
+var SCHEMA_SENT={type:'OBJECT',properties:{heard:{type:'STRING'},ok:{type:'BOOLEAN'},score:{type:'INTEGER'},
+  words:{type:'ARRAY',items:{type:'OBJECT',properties:{word:{type:'STRING'},ok:{type:'BOOLEAN'}},required:['word','ok']}},issues:{type:'ARRAY',items:ISSUE},comment:{type:'STRING'}},required:['heard','ok','score']};
+var COMMON=[
+  'Typical problems for Japanese speakers: r/l confusion; th pronounced as s, z or d; v pronounced as b; f pronounced as h; extra vowels added after consonants (katakana style, e.g. "desuku" for "desk"); wrong vowels (ʌ, æ, ɑ, ɜːr); flat rhythm or stress on the wrong syllable; pronouncing silent letters.',
+  'Accept normal American or British variants. Judge what you actually hear in the recording. Do not assume the student said the target correctly.',
+  'Write "problem", "tip" and "comment" in natural, easy Japanese for a Japanese high school student. You may use IPA symbols and the letters of the word. Give practical mouth and tongue tips.',
+  'If there is no speech in the recording, set heard to an empty string, ok to false and score to 0.'
+].join('\n');
+function promptWord(w){
+  return ['You are a strict but encouraging English pronunciation coach for a Japanese high school student.',
+  'Target word: "'+w.w+'"  (General American: /'+w.ipa+'/).',
+  'The audio is the student trying to say this one word.',
+  '1) In "heard", write the English word you actually heard (best guess).',
+  '2) Check every sound and the word stress against the target. "stress_ok" is whether the stress is on the right syllable.',
+  '3) "ok" is true only if a native speaker would clearly understand it as the target word and there is no major error. "score" is 0-100.',
+  '4) "issues": up to 3 most important problems, most important first. "part" is the letters or IPA sound concerned.',
+  '5) "comment": one short sentence in Japanese (what was good, or the single most important point).',
+  COMMON].join('\n');
+}
+function promptSent(w){
+  return ['You are a strict but encouraging English pronunciation coach for a Japanese high school student.',
+  'Target sentence: "'+w.s+'"',
+  'Focus word: "'+w.w+'" (General American: /'+w.ipa+'/).',
+  'The audio is the student reading this sentence aloud.',
+  '1) In "heard", write the sentence you actually heard.',
+  '2) In "words", list every word of the target sentence in order with "ok" = whether it was pronounced acceptably (missing words are not ok).',
+  '3) "ok" is true only if the whole sentence is clearly understandable to a native speaker, the focus word is pronounced well, and there is no major error. "score" is 0-100, including rhythm and linking.',
+  '4) "issues": up to 3 most important problems, most important first (check the focus word especially). "part" is the word or sound concerned.',
+  '5) "comment": one short sentence in Japanese.',
+  COMMON].join('\n');
+}
+
+/* ================= ブラウザの音声認識（キーがないとき） ================= */
+function browserListen(w,mode,cb){
+  var r;try{r=new SR();}catch(e){return cb({error:'このブラウザでは音声認識が使えません。'});}
+  var done=false,alts=[];
+  r.lang='en-US';r.interimResults=false;r.maxAlternatives=5;r.continuous=false;
+  r.onresult=function(e){for(var i=0;i<e.results.length;i++){for(var k=0;k<e.results[i].length;k++)alts.push(e.results[i][k].transcript);}};
+  r.onerror=function(e){if(done)return;if(e.error==='not-allowed'||e.error==='service-not-allowed'){done=true;cb({error:'マイクを使う許可がありませんでした。ブラウザでこのページのマイクを「許可」にしてください。'});}else if(e.error==='network'){done=true;cb({error:'音声認識のサービスにつながりませんでした。'});}};
+  r.onend=function(){if(done)return;done=true;cb({alts:alts});};
+  try{r.start();}catch(e){done=true;cb({error:'音声認識を始められませんでした。'});}
+  return r;
+}
+function lcsMark(target,heard){
+  var a=toks(target),b=toks(heard),n=a.length,m=b.length,D=[];
+  for(var i=0;i<=n;i++){D.push(new Array(m+1).fill(0));}
+  for(var i2=n-1;i2>=0;i2--)for(var j=m-1;j>=0;j--)D[i2][j]=a[i2]===b[j]?D[i2+1][j+1]+1:Math.max(D[i2+1][j],D[i2][j+1]);
+  var ok=new Array(n).fill(false),x=0,y=0;
+  while(x<n&&y<m){if(a[x]===b[y]){ok[x]=true;x++;y++;}else if(D[x+1][y]>=D[x][y+1])x++;else y++;}
+  return ok;
+}
+function judgeBrowser(w,mode,alts){
+  if(!alts.length)return {heard:'',ok:false,score:0,issues:[],comment:'声が聞き取れませんでした。'};
+  var target=norm(w.w);
+  if(mode==='word'){
+    var hit=alts.some(function(a){var t=toks(a);return t.indexOf(target)>=0||t.indexOf(target+'s')>=0;});
+    var best=alts[0];
+    return {heard:best,ok:hit,score:hit?(toks(alts[0]).indexOf(target)>=0?90:75):20,issues:[],comment:hit?'その単語として聞き取れました。':'「'+w.w+'」として聞き取れませんでした。お手本を聞いて、もう一度ためしてみよう。'};
+  }
+  var bestOk=null,bestN=-1,bestA='';
+  alts.forEach(function(a){var ok=lcsMark(w.s,a),c=ok.filter(Boolean).length;if(c>bestN){bestN=c;bestOk=ok;bestA=a;}});
+  var words=toks(w.s),ratio=bestN/words.length,ti=words.indexOf(target),tiOk=ti<0||bestOk[ti];
+  words.forEach(function(x,i){if(!bestOk[i]&&x.indexOf(target)===0&&x.length<=target.length+3)tiOk=false;});
+  return {heard:bestA,ok:ratio>=0.9&&tiOk,score:Math.round(ratio*100),words:words.map(function(x,i){return {word:x,ok:bestOk[i]};}),issues:[],
+    comment:ratio>=0.9&&tiOk?'文全体が聞き取れました。':'赤い印の単語が聞き取れませんでした。'};
+}
+
+/* ================= テスト ================= */
+var T={};
+var MIC_SVG=$('#b-mic').innerHTML;
+var STOP_SVG='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+function startTest(ws,mode,kind){
+  T={ws:ws,i:0,res:[],mode:mode,kind:kind||'',j:judgeKind(),player:P(),state:'idle',srObj:null};
+  show('test');
+  if(T.j==='g'){
+    setMic('wait','マイクを じゅんび しています…','');
+    micOpen().then(function(ok){
+      if(view!=='test')return;
+      if(ok===false){T.state='mic';showMicError('マイクを使う許可がありませんでした。ブラウザでこのページのマイクを「許可」にしてから、もう一度はじめてください。');return;}
+      if(ok===null){T.state='mic';showMicError('このブラウザでは録音ができませんでした。SafariかChromeで開いてください。');return;}
+      next();
+    });
+  }else next();
+}
+function showMicError(msg){
+  var p=$('#t-panel');p.textContent='';var e=el('p','flash err',msg);e.setAttribute('role','alert');p.appendChild(e);
+  p.appendChild(btn('じゅんびにもどる','',function(){endTest(true);}));
+  setMic('off','','');
+}
+function setMic(state,label,sub){
+  var m=$('#b-mic');m.disabled=(state==='wait'||state==='busy'||state==='off');
+  m.classList.toggle('rec',state==='rec');m.innerHTML=state==='rec'?STOP_SVG:MIC_SVG;
+  m.setAttribute('aria-label',state==='rec'?'録音をとめる':'おして話す');
+  $('#mic-label').textContent=label;$('#mic-sub').textContent=sub;
+  $('#t-rec').hidden=(state==='hide');
+}
+function renderCard(w,answered){
+  var host=$('#t-text');host.textContent='';
+  var tags=$('#t-tags');tags.textContent='';w.tags.forEach(function(t){tags.appendChild(el('span',null,TAGS[t]));});
+  if(T.mode==='word'){
+    host.appendChild(el('p','word',w.w));
+  }else{
+    var p=el('p','sent');p.lang='en';
+    var res=answered&&answered.words;
+    if(res){
+      var parts=w.s.split(/(\s+)/),k=0,tg=findTarget(w),pos=0;
+      parts.forEach(function(part){
+        if(/^\s+$/.test(part)||!part){p.appendChild(document.createTextNode(part));pos+=part.length;return;}
+        var sp=el('span','w',part),pn=toks(part),bad=false;
+        pn.forEach(function(tk){
+          for(var j=k;j<Math.min(res.length,k+4);j++){if(norm(res[j].word)===tk||toks(res[j].word).indexOf(tk)>=0){if(res[j].ok===false)bad=true;k=j+1;break;}}
+        });
+        if(bad)sp.classList.add('miss');
+        if(tg&&pos<=tg.i&&tg.i<pos+part.length)sp.classList.add('tg');
+        p.appendChild(sp);pos+=part.length;
+      });
+    }else{
+      var t=findTarget(w);
+      if(t){p.appendChild(document.createTextNode(w.s.slice(0,t.i)));p.appendChild(el('span','tg',w.s.slice(t.i,t.i+t.len)));p.appendChild(document.createTextNode(w.s.slice(t.i+t.len)));}
+      else p.textContent=w.s;
+    }
+    host.appendChild(p);
+  }
+  var ipa=$('#t-ipa');ipa.textContent='';
+  if(S.ipa==='before'||(S.ipa==='after'&&answered)){ipa.hidden=false;ipa.appendChild(el('b',null,w.w));ipa.appendChild(document.createTextNode('  /'+w.ipa+'/'));}else ipa.hidden=true;
+  var ls=$('#t-listen');ls.textContent='';
+  if(answered||S.pre){
+    var text=T.mode==='word'?w.w:w.s;
+    ls.appendChild(btn('▶ お手本','',function(){speak(text,false);}));
+    ls.appendChild(btn('▶ ゆっくり','',function(){speak(text,true);}));
+    if(answered&&answered.wav){ls.appendChild(btn('▶ 自分の声','',function(){try{var a=new Audio(answered.wav);a.play();}catch(e){}}));}
+  }
+}
+function next(){
+  clearTimeout(T.auto);
+  if(T.i>=T.ws.length)return endTest();
+  var w=T.w=T.ws[T.i];T.try=0;T.first=null;
+  $('#t-count').textContent=(T.i+1)+' / '+T.ws.length;
+  $('#t-prog').style.width=(T.i/T.ws.length*100)+'%';
+  $('#t-panel').textContent='';
+  renderCard(w,null);
+  T.state='ready';
+  setMic('ready','おして話す',T.mode==='word'?'単語を1回はっきり言おう。話し終わると自動でとまります':'英文をさいごまで読もう。話し終わると自動でとまります');
+}
+$('#b-mic').addEventListener('click',function(){
+  if(T.state==='rec'){if(T.j==='g')recStop('tap');else if(T.srObj){try{T.srObj.stop();}catch(e){}}return;}
+  if(T.state!=='ready'&&T.state!=='done')return;
+  clearTimeout(T.auto);
+  try{window.speechSynthesis.cancel();}catch(e){}
+  T.state='rec';$('#t-panel').textContent='';
+  setMic('rec','聞いています…','話し終わったら少し待つか、■をおしてとめます');
+  if(T.j==='g'){
+    recStart(T.mode==='word'?6000:16000,T.mode==='word'?1000:1400,function(why,heard){
+      if(!heard){T.state='ready';setMic('ready','おして話す','声が聞こえませんでした。マイクに近づいて、もう一度おして話してください');return;}
+      var wav=takeWav();judgeG(wav);
+    });
+  }else{
+    T.srObj=browserListen(T.w,T.mode,function(r){
+      T.srObj=null;
+      if(r.error){T.state='ready';setMic('ready','おして話す','');var p=$('#t-panel');p.textContent='';p.appendChild(el('p','flash err',r.error));return;}
+      showResult(judgeBrowser(T.w,T.mode,r.alts),null);
+    });
+  }
+});
+function judgeG(wav){
+  T.state='busy';setMic('busy','判定しています…','数秒かかります');
+  var w=T.w,url=URL.createObjectURL(wav.blob);
+  callGemini(T.mode==='word'?promptWord(w):promptSent(w),b64(wav.buf),T.mode==='word'?SCHEMA_WORD:SCHEMA_SENT).then(function(r){
+    if(T.w!==w||view!=='test')return;
+    r=r||{};
+    var out={heard:String(r.heard||''),ok:!!r.ok,score:Math.max(0,Math.min(100,parseInt(r.score,10)||0)),stress_ok:r.stress_ok,
+      issues:Array.isArray(r.issues)?r.issues.slice(0,3):[],comment:String(r.comment||''),words:Array.isArray(r.words)?r.words:null};
+    if(out.score<60)out.ok=false;
+    showResult(out,url);
+  },function(e){
+    if(T.w!==w||view!=='test')return;
+    T.state='ready';setMic('ready','もう一度 おして話す','');
+    var p=$('#t-panel');p.textContent='';var er=el('p','flash err',e.message);er.setAttribute('role','alert');p.appendChild(er);
+    p.appendChild(btn('この問題をとばす','',function(){T.res.push({id:T.w.id,ok:0,score:null,skip:1});T.i++;next();}));
+  });
+}
+function showResult(r,wavUrl){
+  r.wav=wavUrl;T.try++;
+  if(!T.first){T.first=r;T.res.push({id:T.w.id,ok:r.ok?1:0,score:r.score});}
+  T.state='done';
+  renderCard(T.w,r);
+  setMic('ready','もう一度 話してみる','練習用です。点数は1回めの結果で記録します');
+  var p=$('#t-panel');p.textContent='';
+  var v=el('div','verdict');
+  v.appendChild(el('span','mk'+(r.ok?' ok':''),r.ok?'○':'×'));
+  v.appendChild(el('b',null,r.ok?(T.try>1?'できました！':'よく言えました'):'もう少し'));
+  if(typeof r.score==='number')v.appendChild(el('span','sc',r.score+'点'));
+  if(T.try>1)v.appendChild(el('span','sc','（'+T.try+'回め・練習）'));
+  p.appendChild(v);
+  var h=el('p','heard');h.appendChild(document.createTextNode('聞こえた英語：'));h.appendChild(el('q',null,r.heard||'（聞き取れませんでした）'));p.appendChild(h);
+  if(r.stress_ok===false&&T.mode==='word')p.appendChild(el('p','note','アクセント（強く読む場所）がずれています。'));
+  if(r.issues&&r.issues.length){
+    var ul=el('ul','issues');
+    r.issues.forEach(function(it){var li=el('li');li.appendChild(el('span','part',String(it.part||'')));li.appendChild(document.createTextNode(String(it.problem||'')));if(it.tip)li.appendChild(el('span','tip',String(it.tip)));ul.appendChild(li);});
+    p.appendChild(ul);
+  }
+  if(r.comment)p.appendChild(el('p','comment',r.comment));
+  var b=el('div','btns');
+  var last=T.i===T.ws.length-1;
+  var nx=btn(last?'結果を見る':'つぎへ','primary',function(){T.i++;next();});b.appendChild(nx);
+  if(T.first&&!T.first.ok&&r===T.first)b.appendChild(btn('いまのは あっていた','pen',function(){var x=T.res[T.res.length-1];x.ok=1;x.fixed=1;T.i++;next();}));
+  p.appendChild(b);
+  if(r.ok&&T.try===1)T.auto=setTimeout(function(){if(T.state==='done'&&T.first===r)nx.click();},2600);
+}
+['click','touchstart'].forEach(function(evn){$('#t-panel').addEventListener(evn,function(){clearTimeout(T.auto);},{passive:true});$('#t-listen').addEventListener(evn,function(){clearTimeout(T.auto);},{passive:true});});
+function endTest(abort){
+  clearTimeout(T.auto);if(T.srObj){try{T.srObj.abort();}catch(e){}}
+  Rec.on=false;micClose();try{window.speechSynthesis.cancel();}catch(e){}
+  var res=(T.res||[]).filter(function(r){return !r.skip;});
+  T.state='idle';
+  if(abort===true||!res.length){renderHome();show('home');return;}
+  T.sess={t:Date.now(),m:T.mode,j:T.j,k:T.kind,it:res.map(function(r){var a=[r.id,r.ok,r.score];if(r.fixed)a.push(1);return a;})};
+  var p=T.player;if(Store.players.indexOf(p)<0)Store.players.push(p);p.auto=false;p.s.push(T.sess);persist();
+  renderResult();show('result');
+}
+$('#b-quit').addEventListener('click',function(){endTest();});
+
+/* ================= 結果 ================= */
+function summarize(items){var n=items.length,ok=0,sc=0,sn=0;items.forEach(function(it){if(it[1])ok++;if(typeof it[2]==='number'){sc+=it[2];sn++;}});return {n:n,ok:ok,avg:sn?Math.round(sc/sn):null};}
+function scoreOf(s){var m=summarize(s.it);return pct(m.ok,m.n);}
+function itemRow(it,mode,onFlip){
+  var w=BYID[it[0]],li=el('li');
+  li.appendChild(el('span','m'+(it[1]?'':' ng'),it[1]?'○':'×'));
+  var en=el('span','en',w?(mode==='sent'?w.s:w.w):it[0]);en.lang='en';li.appendChild(en);
+  li.appendChild(el('span','sc',typeof it[2]==='number'?it[2]+'点':''));
+  var sub=el('div','sub');
+  if(w){sub.appendChild(el('span',null,'/'+w.ipa+'/'));var pl=btn('▶','',function(){speak(mode==='sent'?w.s:w.w,false);});pl.className='link';pl.setAttribute('aria-label','お手本を聞く');sub.appendChild(pl);}
+  if(it[3])sub.appendChild(el('span',null,'直した'));
+  if(onFlip){var b=el('button','link',it[1]?'×に直す':'○に直す');b.type='button';b.addEventListener('click',onFlip);sub.appendChild(b);}
+  li.appendChild(sub);return li;
+}
+function flip(p,sess,i){var it=sess.it[i];it[1]=it[1]?0:1;if(it[1])it[3]=1;else it.length=Math.min(it.length,3);persist();}
+function renderResult(){
+  var host=$('#v-result');host.textContent='';
+  var sess=T.sess,sm=summarize(sess.it),now=pct(sm.ok,sm.n);
+  host.appendChild(el('h2',null,T.player.name+' さんの けっか（'+MODE[sess.m]+'）'));
+  var head=el('div','paperhead');var sc=el('div','score',String(now));sc.appendChild(el('small',null,'点'));head.appendChild(sc);
+  var dl=el('dl','facts');
+  [['正解',sm.ok+' / '+sm.n+'問'],['発音の平均点',sm.avg==null?'—':sm.avg+'点'],['判定',sess.j==='g'?'Gemini':'ブラウザの音声認識']].forEach(function(r){dl.appendChild(el('dt',null,r[0]));dl.appendChild(el('dd',null,r[1]));});
+  head.appendChild(dl);host.appendChild(head);
+  var ss=T.player.s.filter(function(x){return x.m===sess.m;});
+  if(ss.length>1){var prev=scoreOf(ss[ss.length-2]),d=now-prev;var cmp=el('p','cmp','ぜんかい '+prev+'点 → こんかい '+now+'点');if(d)cmp.appendChild(el('span',d>0?'up':'',' （'+(d>0?'+':'')+d+'点）'));host.appendChild(cmp);}
+  host.appendChild(el('p','note','この結果は「きろく」に保存しました。判定がちがっていたら「○に直す／×に直す」で直せます。'));
+  host.appendChild(el('h3',null,'1問ずつの結果'));
+  var ul=el('ul','list');sess.it.forEach(function(it,i){ul.appendChild(itemRow(it,sess.m,function(){flip(T.player,sess,i);renderResult();}));});host.appendChild(ul);
+  var b=el('div','btns');b.style.marginTop='20px';
+  var wrong=sess.it.filter(function(it){return !it[1];}).map(function(it){return BYID[it[0]];}).filter(Boolean);
+  if(wrong.length)b.appendChild(btn('まちがえた単語を もう一度','primary',function(){startTest(wrong,sess.m,'retry');}));
+  b.appendChild(btn('べつの問題で もう一度',wrong.length?'':'primary',function(){var ws=pick();if(ws.length)startTest(ws,S.mode,'');}));
+  b.appendChild(btn('きろくを見る','',function(){renderRecords();show('records');}));
+  b.appendChild(btn('じゅんびにもどる','',function(){renderHome();show('home');}));
+  host.appendChild(b);
+}
+
+/* ================= きろく ================= */
+function fmtDate(t){var d=new Date(t);function z(n){return (n<10?'0':'')+n;}return (d.getMonth()+1)+'/'+d.getDate()+' '+z(d.getHours())+':'+z(d.getMinutes());}
+var delArmed=false;
+function renderRecords(){
+  var host=$('#v-records');host.textContent='';var p=P(),st=stats(p);
+  host.appendChild(el('h2',null,'きろく'));
+  var chips=el('div','chips');chips.style.marginBottom='16px';
+  Store.players.forEach(function(x){var b=el('button','chip',x.name);b.type='button';b.setAttribute('aria-pressed',x===p?'true':'false');b.addEventListener('click',function(){S.player=x.id;saveSettings();delArmed=false;renderRecords();});chips.appendChild(b);});
+  host.appendChild(chips);
+  var n=0,ok=0,sc=0,sn=0;Object.keys(st.q).forEach(function(id){var a=st.q[id];n+=a[0];ok+=a[1];sc+=a[2];sn+=a[3];});
+  if(!n){host.appendChild(el('p','empty','まだ きろくが ありません。「テスト」で1回やってみると、ここに正解率・発音の点数・にがてな単語が出ます。'));return;}
+  var sum=el('div','sum');
+  [[n+'問','これまでに答えた数'],[pct(ok,n)+'%','正解率'],[sn?Math.round(sc/sn)+'点':'—','発音の平均点'],[p.s.length+'回','テストの回数']].forEach(function(r){var d=el('div');d.appendChild(el('b',null,r[0]));d.appendChild(el('span',null,r[1]));sum.appendChild(d);});
+  host.appendChild(sum);
+  host.appendChild(el('h3',null,'音の種類ごとの正解率'));
+  var bars=el('div','bars');
+  TAG_ORDER.forEach(function(t){
+    var tn=0,tok=0;WORDS.forEach(function(w){if(w.tags.indexOf(t)<0)return;var a=st.q[w.id];if(a){tn+=a[0];tok+=a[1];}});
+    var r=el('div','bar');r.appendChild(el('span',null,TAGS[t]));var tr=el('span','tr'),i=el('i');i.style.width=(tn?pct(tok,tn):0)+'%';tr.appendChild(i);r.appendChild(tr);
+    r.appendChild(el('span',null,tn?pct(tok,tn)+'%（'+tn+'問）':'—'));bars.appendChild(r);
+  });
+  host.appendChild(bars);
+  var weak=WORDS.filter(function(w){return isWeak(st.q[w.id]);}).sort(function(a,b){var x=st.q[a.id],y=st.q[b.id];return (x[1]/x[0])-(y[1]/y[0])||y[0]-x[0];});
+  host.appendChild(el('h3',null,'にがてな単語（'+weak.length+'語）'));
+  if(!weak.length)host.appendChild(el('p','empty','いまは ありません。さいごにまちがえた単語や、正解率が80%より低い単語がここに出ます。'));
+  else{
+    var ul=el('ul','list');
+    weak.slice(0,40).forEach(function(w){var a=st.q[w.id];ul.appendChild(itemRow([w.id,0,a[3]?Math.round(a[2]/a[3]):null],'word',null));ul.lastChild.querySelector('.m').textContent='×';ul.lastChild.querySelector('.sub').appendChild(el('span',null,a[1]+'/'+a[0]+'回'));});
+    host.appendChild(ul);
+    var wb=el('div','btns');wb.style.marginTop='12px';
+    wb.appendChild(btn('にがてな単語だけ テストする','primary',function(){startTest(weak.slice().sort(function(){return Math.random()-0.5;}).slice(0,S.n),S.mode,'weak');}));
+    host.appendChild(wb);
+  }
+  host.appendChild(el('h3',null,'点数の記録（'+p.s.length+'回）'));
+  p.s.slice(-50).reverse().forEach(function(s){
+    var m=summarize(s.it),d=el('details','hist'),smy=el('summary');
+    smy.appendChild(el('span','pt',pct(m.ok,m.n)+'点'));smy.appendChild(el('span',null,m.ok+'/'+m.n+'問'));
+    smy.appendChild(el('span',null,'発音 '+(m.avg==null?'—':m.avg+'点')));smy.appendChild(el('span','dt',fmtDate(s.t)));
+    smy.appendChild(el('span','dt',MODE[s.m]+'・'+(s.j==='g'?'Gemini':'音声認識')+(s.k==='weak'?'・にがて':s.k==='retry'?'・やりなおし':'')));
+    d.appendChild(smy);
+    d.addEventListener('toggle',function(){if(!d.open||d.querySelector('ul'))return;var ul2=el('ul','list');s.it.forEach(function(it,i){ul2.appendChild(itemRow(it,s.m,function(){flip(p,s,i);renderRecords();}));});d.appendChild(ul2);});
+    host.appendChild(d);
+  });
+  var tools=el('div','btns');tools.style.marginTop='24px';
+  tools.appendChild(btn('CSVで書き出す','',function(){
+    function c(v){v=String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
+    var rows=[['日時','名前','テストの点数','種類','判定','単語','発音記号','例文','正解','発音の点数']];
+    p.s.forEach(function(s){var d=new Date(s.t),ds=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+('0'+d.getMinutes()).slice(-2);
+      s.it.forEach(function(it){var w=BYID[it[0]];rows.push([ds,p.name,scoreOf(s),MODE[s.m],s.j==='g'?'Gemini':'音声認識',w?w.w:it[0],w?w.ipa:'',w?w.s:'',it[1]?1:0,typeof it[2]==='number'?it[2]:'']);});});
+    var text='\uFEFF'+rows.map(function(r){return r.map(c).join(',');}).join('\r\n');
+    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'text/csv'}));var dd=new Date();a.download='eigo-hatsuon-'+dd.getFullYear()+('0'+(dd.getMonth()+1)).slice(-2)+('0'+dd.getDate()).slice(-2)+'.csv';
+    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);
+  }));
+  if(!delArmed)tools.appendChild(btn(p.name+' さんの きろくを消す','ghost',function(){delArmed=true;renderRecords();}));
+  else{tools.appendChild(btn('本当に消す（元にもどせません）','pen',function(){delArmed=false;Store.players=Store.players.filter(function(x){return x!==p;});if(!Store.players.length)Store.players=[newPlayer('じぶん',true)];S.player=null;P();saveSettings();persist();renderRecords();}));tools.appendChild(btn('やめる','',function(){delArmed=false;renderRecords();}));}
+  host.appendChild(tools);
+  host.appendChild(el('p','note','きろくは このブラウザに保存されています。ブラウザの閲覧データを消すと きろくも消えます。'));
+}
+
+/* ================= 起動 ================= */
+load();renderHome();
+/*TEST*/
+})();
+
+</script>
+</body>
+</html>
